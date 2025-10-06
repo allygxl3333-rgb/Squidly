@@ -133,7 +133,7 @@ export default function SquidlyHero_Screenshot() {
         <section className="relative overflow-hidden">
             <YayaPurpleCSS />
 
-            <Navbar />
+            {/*<Navbar />*/}
 
             <div className="relative mx-auto max-w-7xl px-6 pt-12 pb-36 md:pt-20 md:pb-10">
                 <div className="grid place-items-center text-center">

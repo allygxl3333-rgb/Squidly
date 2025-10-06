@@ -17,7 +17,6 @@ import {
 import { motion } from "framer-motion";
 import ScopedSplashCursor from "./ScopedSplashCursor";
 import GradientText from "./GradientText";
-/** 与 Hero 保持一致的四个功能项（仅用于 badge / 兼容） */
 const FEATURE_TOOLS = [
     { key: "control", label: "Control", Icon: LayoutGrid },
     { key: "share", label: "Share", Icon: Share2 },
