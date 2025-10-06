@@ -4,12 +4,12 @@ import { useState } from 'react';
 import { Check, Minus, ChevronDown } from 'lucide-react';
 
 /**
- * Squidly Pricing Page (carefully matched to provided mock)
+ * Squidly Pricing Page (matched to provided mock)
  * ------------------------------------------------------------
- * - Three plans: Basic / Advanced / Pro
- * - Feature comparison table with text, checks, and dashes
- * - FAQ section in a dotted violet container
- * - TailwindCSS only (no Next/Image). Ready for Next.js/React.
+ * Fixes for the "second section" (Features table):
+ *  - Removed sticky left column (no large white block overlay)
+ *  - Plain check icons (no filled chips) and em-dash for missing
+ *  - Row separators only; clean, white table like the mock
  */
 
 const ACCENT = '#6F57FF';
@@ -41,7 +41,7 @@ const PLANS = [
     },
 ] as const;
 
-type PlanId = typeof PLANS[number]['id'];
+type PlanId = (typeof PLANS)[number]['id'];
 
 type Cell = { type: 'text'; value: string } | { type: 'check'; value: boolean };
 
@@ -187,17 +187,18 @@ export default function PricingPage() {
 
             {/* Feature comparison */}
             <section className="mt-16">
-                <h2 className="text-xl font-semibold text-[#1A1E27]">Features</h2>
-
-                <div className="mt-4 overflow-x-auto">
+                <div className="overflow-x-auto">
                     <table className="w-full border-separate border-spacing-0 text-[15px]">
                         <thead>
-                        <tr>
-                            <th className="sticky left-0 bg-white text-left font-medium text-slate-600 py-3 pr-4">&nbsp;</th>
+                        <tr className="border-b border-slate-200/80">
+                            {/* Left column header now shows big "Features" and aligns with plan names */}
+                            <th className="text-left py-6 pr-4 w-[320px] align-bottom">
+                                <div className="text-[28px] md:text-[32px] font-extrabold tracking-tight text-[#1A1E27]">Features</div>
+                            </th>
                             {PLANS.map((p) => (
-                                <th key={p.id} className="text-left font-medium text-[#1A1E27] py-3 px-4">
-                                    <div className="text-base font-semibold">{p.name}</div>
-                                    <div className="text-xs text-slate-500 mt-0.5">{p.tagline}</div>
+                                <th key={p.id} className="text-left py-6 px-4 align-bottom">
+                                    <div className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#1A1E27]">{p.name}</div>
+                                    <div className="text-xs text-slate-500 mt-1">{p.tagline}</div>
                                     <div
                                         className="mt-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
                                         style={{ color: ACCENT, border: `1px solid ${ACCENT}33` }}
@@ -209,11 +210,11 @@ export default function PricingPage() {
                         </tr>
                         </thead>
                         <tbody>
-                        {ROWS.map((row, idx) => (
+                        {ROWS.map((row) => (
                             <tr key={row.feature} className="border-t border-slate-200/80">
                                 <th
                                     scope="row"
-                                    className="sticky left-0 bg-white text-left font-medium text-slate-700 py-4 pr-4"
+                                    className="text-left font-medium text-slate-700 py-4 pr-4 w-[320px]"
                                 >
                                     {row.feature}
                                 </th>
@@ -233,10 +234,7 @@ export default function PricingPage() {
             {/* FAQ */}
             <section className="mt-20">
                 <h2 className="text-2xl font-bold tracking-tight text-[#1A1E27]">Frequently Asked Questions</h2>
-                <div
-                    className="mt-6 rounded-3xl p-1"
-                    style={{ border: `2px dashed ${ACCENT}66` }}
-                >
+                <div className="mt-6 rounded-3xl p-1" style={{ border: `2px dashed ${ACCENT}66` }}>
                     <div className="divide-y divide-slate-200 rounded-3xl bg-white/60 backdrop-blur">
                         {FAQ_ITEMS.map((item) => (
                             <FaqRow
@@ -257,14 +255,14 @@ function Cell({ cell }: { cell: Cell }) {
     if (cell.type === 'text') {
         return <span className="text-[15px] text-slate-800">{cell.value}</span>;
     }
+
+    // Mock uses plain checks (no filled circle) and em-dash for false
     return cell.value ? (
-        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full" style={{ background: `${ACCENT}1A` }}>
-      <Check size={16} style={{ color: ACCENT }} />
+        <span className="inline-flex items-center">
+      <Check className="h-5 w-5" style={{ color: ACCENT }} />
     </span>
     ) : (
-        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-400">
-      <Minus size={16} />
-    </span>
+        <span className="text-slate-400">—</span>
     );
 }
 
@@ -277,10 +275,7 @@ function FaqRow({ item, open, onToggle }: { item: { q: string; a: string }; open
                 onClick={onToggle}
             >
                 <span className="text-[16px] font-semibold text-[#1A1E27]">{item.q}</span>
-                <ChevronDown
-                    className={`h-5 w-5 transition-transform ${open ? 'rotate-180' : ''}`}
-                    style={{ color: ACCENT }}
-                />
+                <ChevronDown className={`h-5 w-5 transition-transform ${open ? 'rotate-180' : ''}`} style={{ color: ACCENT }} />
             </button>
             <div className={`grid transition-[grid-template-rows] duration-300 ease-out ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
                 <div className="overflow-hidden">
