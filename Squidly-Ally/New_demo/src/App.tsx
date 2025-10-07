@@ -14,7 +14,8 @@ import VideoTextSection from './components/VideoTextSection';
 import TestimonialsSection from './components/TestimonialsSection';
 import ImageCompareSection from './components/ImageCompareSection';
 import PrivacySection from './components/PrivacySection';
-
+import FooterinfoSection from './components/FooterInfoSection';
+import TrySquidlySection from './components/TrySquidlySection';
 // 新建的定价页组件（我已放在 Canvas）
 import PricingPage from './Subpages/PricePage';
 
@@ -53,6 +54,8 @@ export default function App() {
                     <Route path="/pricing" element={<PricingPage />} />
                 </Routes>
             </BrowserRouter>
+            <TrySquidlySection />
+            <FooterinfoSection />
         </div>
     );
 }
