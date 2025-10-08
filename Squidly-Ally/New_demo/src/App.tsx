@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import GlobalBackground from './components/GlobalBackground';
 import NavBar from './components/NavBar';
 
-// ↓ 主页区块（保持和你当前顺序一致）
 import SquidlyHero from './components/SquidlyHero';
 import { BrowserSection } from './components/BrowserSection';
 import StepsSection from './components/StepsSection';
@@ -16,13 +15,11 @@ import ImageCompareSection from './components/ImageCompareSection';
 import PrivacySection from './components/PrivacySection';
 import FooterinfoSection from './components/FooterInfoSection';
 import TrySquidlySection from './components/TrySquidlySection';
-// 新建的定价页组件（我已放在 Canvas）
 import PricingPage from './Subpages/PricePage';
 
 function Home() {
     return (
         <>
-            {/* 给锚点留ID，NavBar的 /#product /#modes /#contact 会滚动到这里 */}
             <div id="product">
                 <SquidlyHero />
                 <BrowserSection />
@@ -37,7 +34,7 @@ function Home() {
             <ImageCompareSection />
             <PrivacySection />
 
-            <div id="contact">{/* 你后面可以塞联系表单/页脚 */}</div>
+            <div id="contact"></div>
         </>
     );
 }
@@ -45,10 +42,10 @@ function Home() {
 export default function App() {
     return (
         <div className="min-h-screen relative">
-            <GlobalBackground />
+            {/*<GlobalBackground />*/}
             <BrowserRouter>
                 <NavBar />
-                <div className="pt-20">{/* 留出顶部固定导航高度 */}</div>
+                <div className="pt-20"></div>
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/pricing" element={<PricingPage />} />
