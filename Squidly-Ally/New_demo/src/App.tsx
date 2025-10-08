@@ -16,12 +16,15 @@ import ImageCompareSection from './components/ImageCompareSection';
 import PrivacySection from './components/PrivacySection';
 import FooterinfoSection from './components/FooterInfoSection';
 import TrySquidlySection from './components/TrySquidlySection';
+import NewsletterModal from "./components/NewsletterModal";
 // 新建的定价页组件（我已放在 Canvas）
 import PricingPage from './Subpages/PricePage';
+import WhyChooseSquidlySection from './components/WhyChooseSquidlySection';
 
 function Home() {
     return (
         <>
+            <NewsletterModal />
             {/* 给锚点留ID，NavBar的 /#product /#modes /#contact 会滚动到这里 */}
             <div id="product">
                 <SquidlyHero />
@@ -36,7 +39,7 @@ function Home() {
             <TestimonialsSection />
             <ImageCompareSection />
             <PrivacySection />
-
+            <WhyChooseSquidlySection />
             <div id="contact">{/* 你后面可以塞联系表单/页脚 */}</div>
         </>
     );
@@ -45,7 +48,7 @@ function Home() {
 export default function App() {
     return (
         <div className="min-h-screen relative">
-            <GlobalBackground />
+            {/* <GlobalBackground /> */}
             <BrowserRouter>
                 <NavBar />
                 <div className="pt-20">{/* 留出顶部固定导航高度 */}</div>
