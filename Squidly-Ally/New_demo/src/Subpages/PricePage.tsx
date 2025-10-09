@@ -324,28 +324,27 @@ function PricingCards() {
     },
   ] as const;
 
-  // 只画左右两块黄色
+  // 只画左右两块黄色 —— 稍微放大一点
   const yellowBlobs = `
-    radial-gradient(740px 340px at 18% 44%,
-      rgba(221,193,152,.58) 0,
-      rgba(221,193,152,.32) 28%,
-      transparent 62%),
-    radial-gradient(740px 340px at 82% 44%,
-      rgba(221,193,152,.58) 0,
-      rgba(221,193,152,.32) 28%,
-      transparent 62%)
+    radial-gradient(800px 800px at 16% 70%,
+      rgba(221,193,152,.8) 0,
+      rgba(221,193,152,.6) 28%,
+      transparent 64%),
+    radial-gradient(800px 800px at 84% 30%,
+      rgba(221, 193, 152, .8) 0,
+      rgba(221,193,152,.5) 28%,
+      transparent 64%)
   `;
 
-  // 单独画中间那块紫色（边缘快速衰减为透明，避免外溢）
+  // 中间紫色 —— 纵向拉长、范围加大，但边缘迅速衰减为透明
   const purpleBlob = `
-    radial-gradient(540px 260px at 50% 34%,
-      rgba(135,92,255,.44) 0,
-      rgba(135,92,255,.28) 24%,
-      rgba(135,92,255,.14) 34%,
-      rgba(135,92,255,.06) 40%,
-      transparent 48%)
+    radial-gradient(720px 2500px at 50% 45%,
+      rgba(135,92,255,.42) 0,
+      rgba(135,92,255,.30) 24%,
+      rgba(135,92,255,.14) 40%,
+      rgba(135,92,255,.06) 55%,
+      transparent 65%)
   `;
-
 
   return (
     <section 

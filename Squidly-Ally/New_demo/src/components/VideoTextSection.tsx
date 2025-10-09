@@ -106,13 +106,6 @@ export default function VideoTextSection() {
           {/* line 4 (muted) */}
           <HoverVideoWords className="mt-2" text="Really everything." src="https://www.w3schools.com/html/mov_bbb.mp4" scale={1.12} />
         </h1>
-
-        {/* CTA (optional) */}
-        <div className="mt-10">
-          <ControlChipButton href="#download">
-            Get for Windows
-          </ControlChipButton>
-        </div>
       </div>
     </section>
   );

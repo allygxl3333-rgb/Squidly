@@ -245,10 +245,10 @@ function RightShowcase({ steps, active }: { steps: Step[]; active: number }) {
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <button className="inline-flex flex-1 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50">
-              Message
+              Sign up
             </button>
             <button className="inline-flex flex-1 items-center justify-center rounded-2xl bg-gradient-to-b from-violet-500 to-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(111,87,255,.35)] ring-1 ring-violet-500/30 hover:brightness-105">
-              Get Squidly
+              Console
             </button>
           </div>
         </div>
