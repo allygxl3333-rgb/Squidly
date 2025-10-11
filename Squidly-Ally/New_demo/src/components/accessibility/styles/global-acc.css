@@ -1,0 +1,67 @@
+:root { --acc-filter: none; --acc-page-zoom: 1; --acc-mx: 50vw; --acc-my: 50vh; --acc-mag-scale: 1.8; }
+:root.acc-filter { filter: var(--acc-filter); }
+
+[data-acc-ui] { font-size: 14px !important; }
+:root.acc-page-zoom [data-acc-ui] {
+  transform: scale(calc(1 / var(--acc-page-zoom)));
+  transform-origin: bottom right;
+}
+:root.acc-magnifier [data-acc-ui] {
+  transform: scale(calc(1 / var(--acc-mag-scale))) !important;
+  transform-origin: bottom right !important;
+}
+
+:root.acc-zoom-100 { font-size: 100%; }
+:root.acc-zoom-112 { font-size: 112.5%; }
+:root.acc-zoom-125 { font-size: 125%; }
+:root.acc-zoom-150 { font-size: 150%; }
+:root.acc-zoom-175 { font-size: 175%; }
+:root.acc-zoom-200 { font-size: 200%; }
+:root.acc-zoom-225 { font-size: 225%; }
+:root.acc-zoom-250 { font-size: 250%; }
+
+:root.acc-readable-font body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif !important; }
+
+:root.acc-page-zoom body {
+  transform: scale(var(--acc-page-zoom));
+  transform-origin: top left;
+  width: calc(200% / var(--acc-page-zoom));
+}
+
+:root.acc-magnifier body {
+  transform: scale(var(--acc-mag-scale)) !important;
+  transform-origin: var(--acc-mx) var(--acc-my) !important;
+}
+:root.acc-magnifier .acc-lens-mask {
+  background: radial-gradient(
+    circle 160px at var(--acc-mx) var(--acc-my),
+    rgba(0,0,0,0) 0,
+    rgba(0,0,0,0) 160px,
+    rgba(0,0,0,.25) 180px
+  );
+}
+:root.acc-magnifier.acc-page-zoom body { width: auto; }
+
+:root.acc-underline-links a { text-decoration: underline !important; text-underline-offset: 0.22em; }
+:root.acc-highlight-links a { 
+  background: rgba(124,58,237,.08) !important;
+  box-shadow: 0 0 0 2px rgba(124,58,237,.25) inset !important;
+  border-radius: .25rem;
+  text-decoration-thickness: 0.12em;
+}
+
+:root.acc-dyslexia body, :root.acc-dyslexia * { letter-spacing: 0.0125em !important; word-spacing: 0.06em !important; }
+
+:root.acc-focus *:focus-visible { outline: 3px solid #7c3aed !important; outline-offset: 3px !important; border-radius: 10px; }
+
+:root.acc-reduce-motion * {
+  animation-play-state: paused !important;
+  animation-duration: 0s !important;
+  transition-property: none !important;
+  transition-duration: 0s !important;
+}
+
+:root.acc-alt-audit img:not([alt]) { outline: 2px dashed #ef4444 !important; outline-offset: 2px; }
+[data-acc-ui] { font-size: inherit !important; }
+:root.acc-page-zoom [data-acc-ui],
+ :root.acc-magnifier [data-acc-ui] { transform: none !important; }
