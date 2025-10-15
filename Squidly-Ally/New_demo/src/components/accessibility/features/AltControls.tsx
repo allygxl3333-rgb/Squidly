@@ -1,27 +1,34 @@
 "use client";
 import React from "react";
-import { MousePointer } from "lucide-react";
-import { useAcc } from "../AccProvider";
 
 export default function AltControls() {
-  const { state, setState } = useAcc();
-  return (
-    <section className="rounded-xl border border-slate-300 p-3 bg-white/80">
-      <div className="flex items-center gap-2 text-slate-950 font-medium">
-        <MousePointer className="h-[18px] w-[18px] text-violet-700" />
-        Alt tooltip for images
-        <button
-          onClick={() => setState((s)=>({ ...s, altTooltip: !s.altTooltip }))}
-          role="switch"
-          aria-checked={state.altTooltip}
-          className={`ml-auto relative h-6 w-11 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-violet-300 ${state.altTooltip ? "bg-violet-700" : "bg-slate-400"}`}
-        >
-          <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${state.altTooltip ? "translate-x-5" : "translate-x-0"}`} />
-        </button>
-      </div>
-      <p className="text-[12.5px] text-slate-600 leading-5 mt-1">
-        将 <code>alt</code> 内容显示为浏览器悬浮提示；缺失 alt 的图片会以红色虚线边框高亮，方便开发时修正。
-      </p>
-    </section>
-  );
+    const [enabled, setEnabled] = React.useState(false);
+
+    React.useEffect(() => {
+        const on = localStorage.getItem("acc:alt-tooltips") === "1";
+        setEnabled(on);
+    }, []);
+    React.useEffect(() => {
+        localStorage.setItem("acc:alt-tooltips", enabled ? "1" : "0");
+        const ev = new CustomEvent("acc:alt-tooltips", { detail: { enabled } });
+        window.dispatchEvent(ev);
+    }, [enabled]);
+
+    return (
+        <div className="acc-card">
+            <div className="acc-row">
+                <div className="acc-title">Alt tooltip for images</div>
+                <button
+                    role="switch"
+                    aria-checked={enabled}
+                    data-on={enabled ? "1" : "0"}
+                    className="acc-switch"
+                    onClick={() => setEnabled(v => !v)}
+                />
+            </div>
+            <div className="acc-sub">
+                Show image <code>alt</code> text as a tooltip; highlight images missing <code>alt</code> with a red dashed outline.
+            </div>
+        </div>
+    );
 }

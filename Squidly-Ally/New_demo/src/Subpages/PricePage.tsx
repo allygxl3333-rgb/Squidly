@@ -210,7 +210,7 @@ function TrustedBy() {
 
 /* ====== 这两个常量用于让 Advanced/Pro 微右移（保持你的视觉） ====== */
 const COL_PAD_X = 'px-5';
-const COL_SHIFT_ADV_PRO = 'pl-[32px] md:pl-[32px]';
+const COL_SHIFT_ADV_PRO = 'pl-[10px] md:pl-[10px]';
 
 /* ====== 吸顶需要的导航高度回退值（可用 :root --nav-height 覆盖） ====== */
 const NAV_OFFSET_FALLBACK = 68;

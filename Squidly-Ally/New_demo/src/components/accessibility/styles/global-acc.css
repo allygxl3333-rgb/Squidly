@@ -1,67 +1,331 @@
-:root { --acc-filter: none; --acc-page-zoom: 1; --acc-mx: 50vw; --acc-my: 50vh; --acc-mag-scale: 1.8; }
-:root.acc-filter { filter: var(--acc-filter); }
+/*:root { --acc-filter: none; --acc-page-zoom: 1; --acc-mx: 50vw; --acc-my: 50vh; --acc-mag-scale: 1.8; }*/
+/*:root.acc-filter { filter: var(--acc-filter); }*/
 
-[data-acc-ui] { font-size: 14px !important; }
-:root.acc-page-zoom [data-acc-ui] {
-  transform: scale(calc(1 / var(--acc-page-zoom)));
-  transform-origin: bottom right;
-}
-:root.acc-magnifier [data-acc-ui] {
-  transform: scale(calc(1 / var(--acc-mag-scale))) !important;
-  transform-origin: bottom right !important;
-}
+/*[data-acc-ui] { font-size: 14px !important; }*/
+/*:root.acc-page-zoom [data-acc-ui] {*/
+/*  transform: scale(calc(1 / var(--acc-page-zoom)));*/
+/*  transform-origin: bottom right;*/
+/*}*/
+/*:root.acc-magnifier [data-acc-ui] {*/
+/*  transform: scale(calc(1 / var(--acc-mag-scale))) !important;*/
+/*  transform-origin: bottom right !important;*/
+/*}*/
 
-:root.acc-zoom-100 { font-size: 100%; }
-:root.acc-zoom-112 { font-size: 112.5%; }
-:root.acc-zoom-125 { font-size: 125%; }
-:root.acc-zoom-150 { font-size: 150%; }
-:root.acc-zoom-175 { font-size: 175%; }
-:root.acc-zoom-200 { font-size: 200%; }
-:root.acc-zoom-225 { font-size: 225%; }
-:root.acc-zoom-250 { font-size: 250%; }
+/*:root.acc-zoom-100 { font-size: 100%; }*/
+/*:root.acc-zoom-112 { font-size: 112.5%; }*/
+/*:root.acc-zoom-125 { font-size: 125%; }*/
+/*:root.acc-zoom-150 { font-size: 150%; }*/
+/*:root.acc-zoom-175 { font-size: 175%; }*/
+/*:root.acc-zoom-200 { font-size: 200%; }*/
+/*:root.acc-zoom-225 { font-size: 225%; }*/
+/*:root.acc-zoom-250 { font-size: 250%; }*/
 
-:root.acc-readable-font body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif !important; }
+/*:root.acc-readable-font body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif !important; }*/
 
-:root.acc-page-zoom body {
-  transform: scale(var(--acc-page-zoom));
-  transform-origin: top left;
-  width: calc(200% / var(--acc-page-zoom));
-}
+/*:root.acc-page-zoom body {*/
+/*  transform: scale(var(--acc-page-zoom));*/
+/*  transform-origin: top left;*/
+/*  width: calc(200% / var(--acc-page-zoom));*/
+/*}*/
 
-:root.acc-magnifier body {
-  transform: scale(var(--acc-mag-scale)) !important;
-  transform-origin: var(--acc-mx) var(--acc-my) !important;
-}
-:root.acc-magnifier .acc-lens-mask {
-  background: radial-gradient(
-    circle 160px at var(--acc-mx) var(--acc-my),
-    rgba(0,0,0,0) 0,
-    rgba(0,0,0,0) 160px,
-    rgba(0,0,0,.25) 180px
-  );
-}
-:root.acc-magnifier.acc-page-zoom body { width: auto; }
+/*:root.acc-magnifier body {*/
+/*  transform: scale(var(--acc-mag-scale)) !important;*/
+/*  transform-origin: var(--acc-mx) var(--acc-my) !important;*/
+/*}*/
+/*:root.acc-magnifier .acc-lens-mask {*/
+/*  background: radial-gradient(*/
+/*    circle 160px at var(--acc-mx) var(--acc-my),*/
+/*    rgba(0,0,0,0) 0,*/
+/*    rgba(0,0,0,0) 160px,*/
+/*    rgba(0,0,0,.25) 180px*/
+/*  );*/
+/*}*/
+/*:root.acc-magnifier.acc-page-zoom body { width: auto; }*/
 
-:root.acc-underline-links a { text-decoration: underline !important; text-underline-offset: 0.22em; }
-:root.acc-highlight-links a { 
-  background: rgba(124,58,237,.08) !important;
-  box-shadow: 0 0 0 2px rgba(124,58,237,.25) inset !important;
-  border-radius: .25rem;
-  text-decoration-thickness: 0.12em;
-}
+/*:root.acc-underline-links a { text-decoration: underline !important; text-underline-offset: 0.22em; }*/
+/*:root.acc-highlight-links a {*/
+/*  background: rgba(124,58,237,.08) !important;*/
+/*  box-shadow: 0 0 0 2px rgba(124,58,237,.25) inset !important;*/
+/*  border-radius: .25rem;*/
+/*  text-decoration-thickness: 0.12em;*/
+/*}*/
 
-:root.acc-dyslexia body, :root.acc-dyslexia * { letter-spacing: 0.0125em !important; word-spacing: 0.06em !important; }
+/*:root.acc-dyslexia body, :root.acc-dyslexia * { letter-spacing: 0.0125em !important; word-spacing: 0.06em !important; }*/
 
-:root.acc-focus *:focus-visible { outline: 3px solid #7c3aed !important; outline-offset: 3px !important; border-radius: 10px; }
+/*:root.acc-focus *:focus-visible { outline: 3px solid #7c3aed !important; outline-offset: 3px !important; border-radius: 10px; }*/
 
-:root.acc-reduce-motion * {
-  animation-play-state: paused !important;
-  animation-duration: 0s !important;
-  transition-property: none !important;
-  transition-duration: 0s !important;
-}
+/*:root.acc-reduce-motion * {*/
+/*  animation-play-state: paused !important;*/
+/*  animation-duration: 0s !important;*/
+/*  transition-property: none !important;*/
+/*  transition-duration: 0s !important;*/
+/*}*/
 
-:root.acc-alt-audit img:not([alt]) { outline: 2px dashed #ef4444 !important; outline-offset: 2px; }
-[data-acc-ui] { font-size: inherit !important; }
-:root.acc-page-zoom [data-acc-ui],
- :root.acc-magnifier [data-acc-ui] { transform: none !important; }
+/*:root.acc-alt-audit img:not([alt]) { outline: 2px dashed #ef4444 !important; outline-offset: 2px; }*/
+/*[data-acc-ui] { font-size: inherit !important; }*/
+/*:root.acc-page-zoom [data-acc-ui],*/
+/* :root.acc-magnifier [data-acc-ui] { transform: none !important; }*/
+/*!* === UI 字体：采用图二风格（Segoe UI Variable / Segoe UI / Inter） === *!*/
+/*:root {*/
+/*  --acc-font-ui: "Segoe UI Variable", "Segoe UI", Inter, "Noto Sans SC",*/
+/*  "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", system-ui,*/
+/*  -apple-system, Arial, sans-serif;*/
+
+/*  !* 站点保留紫色风格 —— 用你现在的主色 *!*/
+/*  --acc-accent: #7c4dff; !* 需要换色就改这一条 *!*/
+/*  --acc-surface: #ffffff;*/
+/*  --acc-border: #e5e7eb;*/
+/*  --acc-muted: #f6f7fb;*/
+/*  --acc-text: #0f172a;*/
+/*  --acc-text-subtle: #64748b;*/
+
+/*  !* 颜色强度（降饱和）覆盖层强度，0~0.7 *!*/
+/*  --acc-dim-alpha: 0;*/
+/*}*/
+
+/*!* 面板与按钮保持固定字号 & 字体，不受页面缩放影响 *!*/
+/*[data-acc-ui] {*/
+/*  font-family: var(--acc-font-ui) !important;*/
+/*  font-size: 14px !important;*/
+/*  line-height: 1.45;*/
+/*}*/
+
+/*!* 全页缩放/放大镜时，对面板做“反向缩放”，保持大小恒定 *!*/
+/*:root.acc-page-zoom [data-acc-ui] {*/
+/*  transform: scale(calc(1 / var(--acc-page-zoom))) translateZ(0);*/
+/*  transform-origin: bottom right;*/
+/*}*/
+/*:root.acc-magnifier [data-acc-ui] {*/
+/*  transform: scale(calc(1 / var(--acc-mag-scale))) translateZ(0) !important;*/
+/*  transform-origin: bottom right !important;*/
+/*}*/
+/*:root.acc-page-zoom.acc-magnifier [data-acc-ui] {*/
+/*  transform: scale(calc(1 / (var(--acc-page-zoom) * var(--acc-mag-scale))))*/
+/*  translateZ(0) !important;*/
+/*  transform-origin: bottom right !important;*/
+/*}*/
+
+/*!* ====== 降低颜色强度（图二的 Reduce color intensity）: 混合层 ====== *!*/
+/*!* 该覆盖层位于页面之上、面板之下，不影响面板颜色 *!*/
+/*html.acc-dim::before {*/
+/*  content: "";*/
+/*  position: fixed;*/
+/*  inset: 0;*/
+/*  pointer-events: none;*/
+/*  z-index: 1000; !* 面板我们会放到 10003+ *!*/
+/*  background: rgba(255, 255, 255, var(--acc-dim-alpha));*/
+/*  mix-blend-mode: saturation; !* 通过饱和度混合来“去彩” *!*/
+/*}*/
+
+/*!* ====== 面板头部 & 分段选择器 & 卡片按钮（贴近你的参考图） ====== *!*/
+/*.acc-header {*/
+/*  position: sticky;*/
+/*  top: 0;*/
+/*  background: var(--acc-surface);*/
+/*  border-bottom: 1px solid var(--acc-border);*/
+/*  z-index: 10;*/
+/*}*/
+
+/*.acc-section-title {*/
+/*  font-weight: 600;*/
+/*  color: var(--acc-text);*/
+/*  margin: 10px 0 6px;*/
+/*}*/
+
+/*.acc-segmented {*/
+/*  display: grid;*/
+/*  grid-template-columns: repeat(4, 1fr);*/
+/*  gap: 8px;*/
+/*  background: var(--acc-muted);*/
+/*  border: 1px solid var(--acc-border);*/
+/*  border-radius: 9999px;*/
+/*  padding: 6px;*/
+/*}*/
+/*.acc-segmented button {*/
+/*  height: 36px;*/
+/*  border-radius: 9999px;*/
+/*  background: transparent;*/
+/*  border: 1px solid transparent;*/
+/*  color: var(--acc-text);*/
+/*  font-weight: 600;*/
+/*}*/
+/*.acc-segmented button[aria-pressed="true"] {*/
+/*  background: var(--acc-surface);*/
+/*  border-color: var(--acc-accent);*/
+/*  box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.15);*/
+/*  color: var(--acc-text);*/
+/*}*/
+
+/*.acc-tile {*/
+/*  border: 1px solid var(--acc-border);*/
+/*  border-radius: 18px;*/
+/*  background: var(--acc-surface);*/
+/*  padding: 14px;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  gap: 12px;*/
+/*}*/
+/*.acc-tile.is-primary {*/
+/*  background: rgba(124, 77, 255, 0.08);*/
+/*  border-color: rgba(124, 77, 255, 0.45);*/
+/*}*/
+
+/*!* 开关（大号） *!*/
+/*.acc-switch {*/
+/*  position: relative;*/
+/*  width: 46px;*/
+/*  height: 26px;*/
+/*  border-radius: 9999px;*/
+/*  background: #cbd5e1;*/
+/*  transition: background 0.2s ease;*/
+/*}*/
+/*.acc-switch[aria-checked="true"] {*/
+/*  background: var(--acc-accent);*/
+/*}*/
+/*.acc-switch::after {*/
+/*  content: "";*/
+/*  position: absolute;*/
+/*  top: 3px;*/
+/*  left: 3px;*/
+/*  width: 20px;*/
+/*  height: 20px;*/
+/*  border-radius: 9999px;*/
+/*  background: #fff;*/
+/*  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);*/
+/*  transform: translateX(0);*/
+/*  transition: transform 0.2s ease;*/
+/*}*/
+/*.acc-switch[aria-checked="true"]::after {*/
+/*  transform: translateX(20px);*/
+/*}*/
+
+/*!* 卡片缩略图外框（对比度选项） *!*/
+/*.acc-contrast-thumb {*/
+/*  border-radius: 14px;*/
+/*  border: 1px solid var(--acc-border);*/
+/*  overflow: hidden;*/
+/*  height: 72px;*/
+/*  background: linear-gradient(135deg, #dbeafe, #f1f5f9);*/
+/*}*/
+/*!* ===== Reading Lens (Magnifier) ===== *!*/
+/*#acc-lens.acc-lens{*/
+/*  !* 初始隐藏，由 js 控制 display、opacity、transform *!*/
+/*  display: none;*/
+/*  width: 520px;              !* 你可以改成 560px *!*/
+/*  min-height: 160px;*/
+/*  max-height: 280px;         !* 避免占太多屏幕 *!*/
+/*  background: rgba(18, 19, 22, 0.92);*/
+/*  color: #fff;*/
+/*  border-radius: 16px;*/
+/*  box-shadow: 0 20px 50px rgba(0,0,0,0.35), 0 4px 14px rgba(0,0,0,0.25);*/
+/*  backdrop-filter: saturate(120%);*/
+/*  padding: 16px 18px;*/
+/*  opacity: 0;*/
+/*  transition: opacity .15s ease;*/
+/*}*/
+
+/*#acc-lens .acc-lens-text{*/
+/*  font-weight: 800;*/
+/*  line-height: 1.2;*/
+/*  letter-spacing: .01em;*/
+/*  !* 根据屏幕自适应字号 *!*/
+/*  font-size: clamp(18px, 2.2vw, 34px);*/
+/*  !* 可选：全大写风格（像你截图那样） *!*/
+/*  text-transform: none; !* 改成 uppercase 可强制大写 *!*/
+/*  overflow: auto;*/
+/*  max-height: 240px;*/
+/*}*/
+
+/*!* 自定义滚动条（可选） *!*/
+/*#acc-lens .acc-lens-text::-webkit-scrollbar{*/
+/*  width: 8px;*/
+/*}*/
+/*#acc-lens .acc-lens-text::-webkit-scrollbar-thumb{*/
+/*  background: rgba(255,255,255,.25);*/
+/*  border-radius: 999px;*/
+/*}*/
+/*#acc-lens .acc-lens-text::-webkit-scrollbar-track{*/
+/*  background: transparent;*/
+/*}*/
+
+/*!* Stick 顶栏（你已有） *!*/
+/*[data-acc-ui] .acc-header{*/
+/*  position: sticky;*/
+/*  top: 0;*/
+/*  background: #fff;*/
+/*  z-index: 1;*/
+/*  border-bottom: 1px solid #e5e7eb;*/
+/*}*/
+
+/*!* 小屏兜底：抽屉宽度 *!*/
+/*@media (max-width: 1024px){*/
+/*  .fixed.right-0.h-screen.w-\[25vw\]{*/
+/*    width: min(90vw, 560px) !important;*/
+/*  }*/
+/*}*/
+/*!* unified control card *!*/
+/*.acc-card{*/
+/*  border:1px solid #e5e7eb;*/
+/*  border-radius:16px;*/
+/*  background:#fff;*/
+/*  padding:12px 14px;*/
+/*  overflow:hidden;            !* 防止开关/文字溢出到邻列 *!*/
+/*}*/
+
+/*!* 如果有人误把卡片再嵌套一层，内层外观清空，避免“双外框” *!*/
+/*.acc-card .acc-card{*/
+/*  border:0 !important;*/
+/*  box-shadow:none !important;*/
+/*  background:transparent !important;*/
+/*  padding:0 !important;*/
+/*}*/
+
+/*!* title / subtext / row *!*/
+/*.acc-title{ font-weight:700; font-size:14px; line-height:1.2; color:#0b0d10; }*/
+/*.acc-sub{ margin-top:6px; font-size:12px; line-height:1.5; color:#667085; }*/
+/*.acc-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }*/
+
+/*!* compact switch (不再出现大气泡“Off”遮到隔壁卡片) *!*/
+/*.acc-switch{*/
+/*  width:46px; height:26px; border-radius:999px;*/
+/*  border:1px solid #c7c9d1; background:#fff; position:relative; cursor:pointer;*/
+/*}*/
+/*.acc-switch::after{*/
+/*  content:""; position:absolute; top:50%; left:3px; transform:translateY(-50%);*/
+/*  width:20px; height:20px; border-radius:50%; background:#c7c9d1; transition:left .18s ease;*/
+/*}*/
+/*.acc-switch[data-on="1"]{ background:#6f57ff; border-color:#6f57ff; }*/
+/*.acc-switch[data-on="1"]::after{ left:23px; background:#fff; }*/
+/*!* ===== Reading Lens (Magnifier) ===== *!*/
+/*#acc-lens.acc-lens{*/
+/*  display:none;             !* 由 JS 控制显示 *!*/
+/*  width: 560px;*/
+/*  min-height: 160px;*/
+/*  max-height: 280px;*/
+/*  padding: 16px 18px;*/
+/*  background: rgba(18,19,22,.92);*/
+/*  color:#fff;*/
+/*  border-radius:16px;*/
+/*  box-shadow: 0 20px 50px rgba(0,0,0,.35), 0 4px 14px rgba(0,0,0,.25);*/
+/*  opacity:0;*/
+/*  transition: opacity .15s ease;*/
+/*}*/
+/*#acc-lens .acc-lens-text{*/
+/*  font-weight: 800;*/
+/*  line-height: 1.2;*/
+/*  letter-spacing: .01em;*/
+/*  font-size: clamp(18px, 2.2vw, 34px);*/
+/*  max-height: 240px;*/
+/*  overflow:auto;*/
+/*}*/
+/*!* 小屏抽屉兜底：1/3 太宽时缩到 92vw *!*/
+/*@media (max-width: 1024px){*/
+/*  .fixed.right-0.h-screen.w-\[33\.333vw\]{*/
+/*    width: min(92vw, 720px) !important;*/
+/*  }*/
+/*}*/
+/*!* 顶栏吸顶，滚动时不动 *!*/
+/*[data-acc-ui] .acc-header{*/
+/*  position: sticky; top: 0; background: #fff; z-index: 1;*/
+/*  border-bottom: 1px solid #e5e7eb;*/
+/*}*/
