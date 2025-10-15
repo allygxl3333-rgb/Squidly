@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import GlobalBackground from './components/GlobalBackground';
 import NavBar from './components/NavBar';
+import AccessibilityButton from "./components/accessibility/AccessibilityButton";
 
 import SquidlyHero from './components/SquidlyHero';
 import { BrowserSection } from './components/BrowserSection';
@@ -54,11 +55,9 @@ function Home() {
 export default function App() {
     return (
         <div className="min-h-screen relative">
-
-            {/* <GlobalBackground /> */}
-
             <BrowserRouter>
                 <NavBar />
+                <AccessibilityButton /> {/* ✅ 全站可见 */}
                 <div className="pt-20"></div>
                 <Routes>
                     <Route path="/" element={<Home />} />
