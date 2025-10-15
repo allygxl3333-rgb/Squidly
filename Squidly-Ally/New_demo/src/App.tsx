@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import GlobalBackground from './components/GlobalBackground';
 import NavBar from './components/NavBar';
 import AccessibilityButton from "./components/accessibility/AccessibilityButton";
+import AccInlineMagnifier from "./components/accessibility/features/AccMagnifier";
+import AccMagnifierLite from "./components/AccMagnifierUltra";
 
 import SquidlyHero from './components/SquidlyHero';
 import { BrowserSection } from './components/BrowserSection';
@@ -58,6 +60,8 @@ export default function App() {
             <BrowserRouter>
                 <NavBar />
                 <AccessibilityButton /> {/* ✅ 全站可见 */}
+                <AccMagnifierLite/>
+
                 <div className="pt-20"></div>
                 <Routes>
                     <Route path="/" element={<Home />} />
