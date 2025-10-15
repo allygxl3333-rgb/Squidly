@@ -94,7 +94,40 @@ export function ensureSkipLink() {
 }
 
 export function applyToHtml(s: AccState) {
+  if (typeof document === "undefined") return;
   const html = document.documentElement;
+
+  // 记住初始根字号，避免重复叠乘
+  const BASE_KEY = "data-acc-base-font";
+  let base = Number(html.getAttribute(BASE_KEY));
+  if (!base) {
+    const computed = parseFloat(getComputedStyle(html).fontSize || "16");
+    base = Number.isFinite(computed) && computed > 0 ? computed : 16;
+    html.setAttribute(BASE_KEY, String(base));
+  }
+
+  // 你的 SCALE_STEPS 如果是百分数（100/112/125...），先换成倍数
+  const scalePct = typeof s.textScale === "number" ? s.textScale : 100;
+  const scale = scalePct / 100;  // 1, 1.12, 1.25...
+
+  // 1) 用根字号驱动 rem（Tailwind 的 text-* 会随 rem 放大）
+  html.style.fontSize = `calc(${base}px * ${scale})`;
+
+  // 2) 写入变量，给“兜底 CSS”用
+  html.style.setProperty("--acc-text-scale", String(scale));
+
+  // 3) 某些浏览器对 px 文本也有轻微帮助
+  // @ts-ignore
+  html.style.textSizeAdjust = `calc(100% * ${scale})`;
+  html.style.setProperty("-webkit-text-size-adjust", `calc(100% * ${scale})`);
+
+  // 4) 当缩放 ≠ 1 时才打开“兜底放大”
+  if (Math.abs(scale - 1) > 1e-3) {
+    html.setAttribute("data-acc-enforce-text", "1");
+  } else {
+    html.removeAttribute("data-acc-enforce-text");
+  }
+
   const cl = html.classList;
 
   // Reset zoom classes then apply
