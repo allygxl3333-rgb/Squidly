@@ -433,111 +433,95 @@ function PricingCards() {
             </div>
         </div>
 
-            <div className="mx-auto max-w-[1100px] px-6">
-                <div className="text-center">
-                    <h2 className="text-[28px] md:text-[32px] font-extrabold tracking-tight text-[#1A1E27]">
-                        Pricing made accessible for everyone
-                    </h2>
-                    <div className="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[15px] text-slate-700">
-                        <span>✓ Easy access</span>
-                        <span>✓ 7 day free trial</span>
-                        <span>✓ Free to quit</span>
-                    </div>
+        <div className="mx-auto mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+          {PRICING_PLANS.map((p) => {
+            const tone = p.tone;
 
-                    <div className="mt-6">
-                        <BillingToggle period={period} setPeriod={setPeriod} />
-                    </div>
+            const glassCommon =
+              'backdrop-blur-xl border border-white/50 ring-1 ring-white/40 shadow-[0_18px_40px_rgba(17,24,39,0.12)] text-[#1A1E27]';
+            const glassWeak = 'bg-white/18'; // Basic
+            const glassStrong = 'bg-white/28'; // Advanced
+            const cardCls =
+              tone === 'solid'
+                ? 'border-transparent bg-[#8B78DC] text-white shadow-xl'
+                : `${glassCommon} ${
+                    tone === 'glass' ? glassWeak : glassStrong
+                  }`;
+
+            return (
+              <div
+                key={p.id}
+                className={`relative rounded-[22px] p-6 md:p-7 ${cardCls} flex flex-col`}
+              >
+                <div
+                  className={`text-[18px] font-semibold ${
+                    tone === 'solid' ? 'text-white' : 'text-[#1A1E27]'
+                  }`}
+                >
+                  {p.name}
                 </div>
 
-                <div className="mx-auto mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-                    {PRICING_PLANS.map((p) => {
-                        const tone = p.tone;
+                <div className="mt-4 flex items-end gap-1">
+                  <div
+                    className={`text-[34px] font-extrabold tracking-tight leading-none ${
+                      tone === 'solid' ? 'text-white' : 'text-[#1A1E27]'
+                    }`}
+                  >
+                    {p.priceLabel(period)}
+                  </div>
+                  {p.subtitle && (
+                    <div
+                      className={`pb-1 text-[14px] font-semibold ${
+                        tone === 'solid' ? 'text-white/90' : 'text-[#1A1E27]'
+                      }`}
+                    >
+                      {p.subtitle}
+                    </div>
+                  )}
+                </div>
 
-                        const glassCommon =
-                            'backdrop-blur-xl border border-white/50 ring-1 ring-white/40 shadow-[0_18px_40px_rgba(17,24,39,0.12)] text-[#1A1E27]';
-                        const glassWeak = 'bg-white/18'; // Basic
-                        const glassStrong = 'bg-white/28'; // Advanced
-                        const cardCls =
-                            tone === 'solid'
-                                ? 'border-transparent bg-[#8B78DC] text-white shadow-xl'
-                                : `${glassCommon} ${
-                                    tone === 'glass' ? glassWeak : glassStrong
-                                }`;
-
-                        return (
-                            <div
-                                key={p.id}
-                                className={`relative rounded-[22px] p-6 md:p-7 ${cardCls} flex flex-col`}
-                            >
-                                <div
-                                    className={`text-[18px] font-semibold ${
-                                        tone === 'solid' ? 'text-white' : 'text-[#1A1E27]'
-                                    }`}
-                                >
-                                    {p.name}
-                                </div>
-
-                                <div className="mt-4 flex items-end gap-1">
-                                    <div
-                                        className={`text-[34px] font-extrabold tracking-tight leading-none ${
-                                            tone === 'solid' ? 'text-white' : 'text-[#1A1E27]'
-                                        }`}
-                                    >
-                                        {p.priceLabel(period)}
-                                    </div>
-                                    {p.subtitle && (
-                                        <div
-                                            className={`pb-1 text-[14px] font-semibold ${
-                                                tone === 'solid' ? 'text-white/90' : 'text-[#1A1E27]'
-                                            }`}
-                                        >
-                                            {p.subtitle}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <ul className="mt-6 space-y-4 text-[15px] flex-1">
-                                    {p.features.map((f) => (
-                                        <li key={f} className="flex items-start gap-3">
+                <ul className="mt-6 space-y-4 text-[15px] flex-1">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-start gap-3">
                       <span
-                          className={`mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full ring-1 ${
-                              tone === 'solid'
-                                  ? 'bg-white/15 ring-white/40'
-                                  : 'bg-white ring-violet-200'
-                          }`}
+                        className={`mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full ring-1 ${
+                          tone === 'solid'
+                            ? 'bg-white/15 ring-white/40'
+                            : 'bg-white ring-violet-200'
+                        }`}
                       >
                         <Check
-                            className={
-                                tone === 'solid' ? 'h-3.5 w-3.5 text-white' : 'h-3.5 w-3.5'
-                            }
-                            style={{
-                                color: tone === 'solid' ? 'white' : '#6F57FF',
-                            }}
+                          className={
+                            tone === 'solid' ? 'h-3.5 w-3.5 text-white' : 'h-3.5 w-3.5'
+                          }
+                          style={{
+                            color: tone === 'solid' ? 'white' : '#6F57FF',
+                          }}
                         />
                       </span>
-                                            <span
-                                                className={
-                                                    tone === 'solid' ? 'text-white/95' : 'text-[#1A1E27]'
-                                                }
-                                            >
+                      <span
+                        className={
+                          tone === 'solid' ? 'text-white/95' : 'text-[#1A1E27]'
+                        }
+                      >
                         {f}
                       </span>
-                                        </li>
-                                    ))}
-                                </ul>
+                    </li>
+                  ))}
+                </ul>
 
-                                <GlassButton
-                                    variant={tone === 'solid' ? 'dark' : 'light'}
-                                    className="mt-7"
-                                >
-                                    {p.cta}
-                                </GlassButton>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-        </section>
+                <GlassButton
+                  variant={tone === 'solid' ? 'dark' : 'light'}
+                  className="mt-7"
+                >
+                  {p.cta}
+                </GlassButton>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
     );
 }
 
