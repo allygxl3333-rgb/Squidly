@@ -290,13 +290,13 @@ function PricingCards() {
         'Limited meetings minutes',
         'Limited on quiz and grid editor requests',
       ],
-      cta: 'Purchase Plan',
+      cta: 'Sign in ',
     },
     {
       id: 'advanced',
       name: 'Advanced',
       priceLabel: (p: Period) => (p === 'monthly' ? '$20' : '$16'),
-      subtitle: '/month pp',
+      subtitle: '/ month pp',
       tone: 'glass-strong' as const,
       features: [
         'Meetings up to 480 minutes per month',
@@ -305,13 +305,13 @@ function PricingCards() {
         'Customer support',
         'SCIM user management',
       ],
-      cta: 'Purchase Plan',
+      cta: 'Sign in',
     },
     {
       id: 'pro',
       name: 'Pro',
       priceLabel: (p: Period) => (p === 'monthly' ? '$35' : '$28'),
-      subtitle: '/month pp',
+      subtitle: '/ month pp',
       tone: 'solid' as const,
       features: [
         'Unlimited meeting minutes',
@@ -320,7 +320,7 @@ function PricingCards() {
         'Admin dashboard',
         'Early feature access',
       ],
-      cta: 'Purchase Plan',
+      cta: 'Sign in ',
     },
   ] as const;
 
@@ -397,7 +397,7 @@ function PricingCards() {
           <div className="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[15px] text-slate-700">
             <span>✓ Easy access</span>
             <span>✓ 7 day free trial</span>
-            <span>✓ Free to quit</span>
+            <span>✓ Cancel anytime</span>
           </div>
 
           
