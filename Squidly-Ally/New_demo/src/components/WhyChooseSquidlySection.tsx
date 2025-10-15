@@ -1,303 +1,154 @@
-// src/components/WhyChooseSquidlySection.tsx
-import React, { useEffect, useRef, useState } from "react";
-import { EyeOff, MapPin, CheckCircle2 } from "lucide-react";
+import React, { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
-// 左侧第一个条目的本地图标（你已有）
-import hugIcon from "../Photo/hug.png"; 
-import aiIcon from "../Photo/ai-brain.png";
-import stethoscopeIcon from "../Photo/stethoscope.png";
-
+// ===== Use images/text from your Why-Choose section =====
+// Replace/extend these imports to match your actual WhyChoose assets
 // 右侧对应的三张图片（用你的真实文件名）
 import imgVoice from "../Photo/why-voice.jpg";
 import imgCare from "../Photo/why-care.png";
 import imgAI from "../Photo/why-ai.png";
 
-/** 主组件 */
-export default function WhyChooseSquidlySection() {
-  const steps: Step[] = [
-    {
-      title: "Video Calls for Every Voice",
-      desc:
-        "Built to make communication extraordinarily inclusive, Squidly is the best way to make accessible video calls.",
-      iconImg: hugIcon,     // 左侧图标：本地图片
-      image: imgVoice,      // 右侧大图
-      imageAlt: "Accessible video calls preview",
-    },
-    {
-      title: "Patient Care Meets Simplicity",
-      desc:
-        "Designed alongside clinicians and users, Squidly makes remote sessions effective and accessible.",
-      iconImg: stethoscopeIcon,   // 等你下载完护理图标后换成对应的 SVG/PNG 路径
-      image: imgCare,
-      imageAlt: "Remote patient care with Squidly",
-    },
-    {
-      title: "Frontier Intelligence",
-      desc:
-        "Powered by a mix of purpose-built and frontier AI models, Squidly is smart and fast.",
-      iconImg: aiIcon,   // 等你下载完 AI 图标后换
-      image: imgAI,
-      imageAlt: "Frontier AI models powering Squidly",
-    },
-  ];
+// If your Why Choose has a third distinct image, import it here and update MEDIA[2]
+// import thirdImg from "../Photo/why-choose-3.png";
 
+// ===== Content pulled from your earlier Why-Choose copy (you can edit freely) =====
+const ITEMS: { title: string; bullets: string[] }[] = [
+  {
+    title: "Video Calls for Every Voice",
+    bullets: [
+      "Built to make communication extraordinarily inclusive, Squidly is the best way to make accessible video calls.",
+    ],
+  },
+  {
+    title: "Patient Care Meets Simplicity",
+    bullets: [
+      "Designed alongside clinicians and users, Squidly makes remote sessions effective and accessible.",
+    ],
+  },
+  {
+    title: "Frontier Intelligence",
+    bullets: [
+      "Powered by a mix of purpose-built and frontier AI models, Squidly is smart and fast.",
+    ],
+  },
+];
+
+const MEDIA: React.ReactNode[] = [
+  <img key="m0" src={imgVoice} alt="Why choose — item 1" className="block h-auto w-full object-cover" />,
+  <img key="m1" src={imgCare} alt="Why choose — item 2" className="block h-auto w-full object-cover" />,
+  // thirdImg ? <img key="m2" src={thirdImg} .../> :
+  <img key="m2" src={imgAI} alt="Why choose — item 3" className="block h-auto w-full object-cover" />,
+];
+
+const ACCENTS = [
+  "from-violet-500 to-fuchsia-500",
+  "from-indigo-500 to-violet-500",
+  "from-emerald-500 to-teal-500",
+];
+
+export default function WhyChooseSquidlySection() {
   const [active, setActive] = useState(0);
 
   return (
-    <section aria-label="Why choose Squidly" className="py-16 md:py-24">
-      <style>{`
-        @keyframes floaty { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-6px) } }
-        .chip-float-1{ animation: floaty 4.2s ease-in-out infinite; }
-        .chip-float-2{ animation: floaty 4.6s ease-in-out infinite; animation-delay:.2s; }
-      `}</style>
+    <section className="relative mx-auto max-w-[1200px] px-6 py-20 lg:py-28" aria-label="Why choose Squidly">
+      <div className="grid items-start gap-4 lg:grid-cols-[420px_minmax(0,1fr)]">
+        {/* Left: Steps-style vertical list */}
+        <div>
+          <h2 className="mb-8 text-5xl md:text-6xl font-extrabold leading-tight tracking-tight text-[#7A5CFF]">
+            Why choose
+            <span className="ml-2 text-slate-900">Squidly</span>
+          </h2>
 
-      {/* 头部 */}
-      <div className="mx-auto max-w-5xl px-6 text-center">
-        <p className="text-sm font-semibold text-violet-700">Why Squidly</p>
-        <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl">
-          Why choose Squidly
-        </h2>
-        <p className="mx-auto mt-3 max-w-3xl text-slate-600">
-          Squidly works the way you need — invisible to screen share, fast to set up, and designed to stay out of your way while you focus.
-        </p>
-      </div>
+          <ol className="relative">
+            {ITEMS.map((s, idx) => {
+              const isActive = active === idx;
+              return (
+                <li key={idx} className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setActive(idx)}
+                    className={[
+                      "flex w-full items-center gap-4 py-4 transition-colors",
+                      "text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#6F57FF]/40 rounded-md",
+                      isActive ? "text-slate-900" : "text-slate-700 hover:text-slate-900",
+                    ].join(" ")}
+                  >
+                    <span
+                      className={[
+                        "grid h-9 w-9 place-items-center rounded-full text-white text-[13px] font-semibold",
+                        "bg-gradient-to-br",
+                        ACCENTS[idx % ACCENTS.length],
+                        "shadow-[0_8px_18px_rgba(122,59,255,.15)]",
+                      ].join(" ")}
+                    >
+                      {idx + 1}
+                    </span>
 
-      {/* 主体两列 */}
-      <div className="mx-auto mt-12 grid max-w-6xl grid-cols-1 gap-10 px-6 md:grid-cols-2 md:gap-12">
-        {/* 左：可点击步骤 + 滑动高亮 */}
-        <SelectableSteps steps={steps} active={active} onChange={setActive} />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[20px] font-semibold leading-none whitespace-pre-line">{s.title}</div>
+                      <div
+                        className={[
+                          "mt-2 h-[4px] w-24 rounded-full",
+                          isActive ? `bg-gradient-to-r ${ACCENTS[idx % ACCENTS.length]}` : "bg-slate-200/70",
+                        ].join(" ")}
+                      />
+                    </div>
+                  </button>
 
-        {/* 右：展示卡片（图片随 active 切换） */}
-        <RightShowcase steps={steps} active={active} />
+                  <AnimatePresence initial={false}>
+                    {isActive && (
+                      <motion.div
+                        key={`panel-${idx}`}
+                        initial={{ height: 0, opacity: 0, y: -6 }}
+                        animate={{ height: "auto", opacity: 1, y: 0 }}
+                        exit={{ height: 0, opacity: 0, y: -6 }}
+                        transition={{ duration: 0.28, ease: "easeOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pl-[52px] pr-2 pb-6">
+                          <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-[#F1EDFF] px-3 py-1 text-xs font-semibold text-[#6F57FF] ring-1 ring-[#E3DDFF]">
+                            REASON {idx + 1}
+                          </div>
+                          <ul className="space-y-2 text-[16px] text-slate-800">
+                            {s.bullets.map((b, i) => (
+                              <li key={i} className="flex items-start gap-2">
+                                <span className="mt-[9px] inline-block h-[6px] w-[6px] rounded-full bg-slate-400/80" />
+                                <span>{b}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {idx < ITEMS.length - 1 && (
+                    <div className="my-1 h-px w-full bg-gradient-to-r from-transparent via-slate-200/70 to-transparent" />
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+
+        {/* Right: Single media panel that switches with active item */}
+        <div className="relative self-start">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`media-${active}`}
+              initial={{ opacity: 0, y: 10, scale: 0.99 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.995 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              className="mx-auto w-full max-w-[650px]"
+            >
+              <figure className="overflow-hidden rounded-[24px] bg-white ring-1 ring-violet-200 shadow-[0_30px_80px_rgba(122,59,255,.12)]">
+                {MEDIA[active]}
+              </figure>
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );
 }
-
-/* ================= 类型 ================= */
-type Step = {
-  title: string;
-  desc: string;
-  iconImg?: string;      // 左侧小图标（本地图片）
-  image: string;         // 右侧大图
-  imageAlt?: string;
-};
-
-/* ================= 左列：可选择步骤 & 滑动高亮 ================= */
-function SelectableSteps({
-  steps,
-  active,
-  onChange,
-}: {
-  steps: Step[];
-  active: number;
-  onChange: (i: number) => void;
-}) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [highlight, setHighlight] = useState<{ top: number; height: number }>({
-    top: 0,
-    height: 0,
-  });
-
-  // 计算高亮位置
-  const updateHighlight = (index = active) => {
-    const container = containerRef.current;
-    const el = itemRefs.current[index];
-    if (!container || !el) return;
-    const c = container.getBoundingClientRect();
-    const r = el.getBoundingClientRect();
-    setHighlight({ top: r.top - c.top, height: r.height });
-  };
-
-  useEffect(() => {
-    updateHighlight(active);
-    const onResize = () => updateHighlight();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    updateHighlight(active);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, steps.length]);
-
-  return (
-    <div
-      ref={containerRef}
-      className="relative flex flex-col gap-6"
-      style={{ isolation: "isolate" }}
-    >
-      {/* 滑动高亮背景 */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-0 right-0 z-0 rounded-2xl border border-violet-200 bg-violet-50/70 shadow-md transition-all duration-300"
-        style={{ top: highlight.top, height: highlight.height }}
-      />
-
-      {steps.map((s, i) => {
-        const activeItem = i === active;
-        return (
-          <div
-            key={i}
-            ref={(el) => (itemRefs.current[i] = el)}
-            role="button"
-            tabIndex={0}
-            onClick={() => onChange(i)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onChange(i);
-              }
-              if (e.key === "ArrowUp") {
-                e.preventDefault();
-                onChange(Math.max(0, active - 1));
-              }
-              if (e.key === "ArrowDown") {
-                e.preventDefault();
-                onChange(Math.min(steps.length - 1, active + 1));
-              }
-            }}
-            className={[
-              "relative z-10 cursor-pointer rounded-2xl border px-5 py-5 transition-colors md:px-6 md:py-6",
-              activeItem
-                ? "border-transparent"
-                : "border-slate-200 bg-white hover:bg-slate-50",
-            ].join(" ")}
-          >
-            <div className="flex items-start gap-4">
-              {/* 序号 + 图标 */}
-              <div className="relative mt-1">
-                <span
-                  className={[
-                    "absolute -left-2 -top-2 grid h-6 w-6 place-items-center rounded-full text-[11px] font-extrabold text-white shadow ring-2 ring-white transition-colors",
-                    activeItem
-                      ? "bg-gradient-to-b from-violet-500 to-violet-700"
-                      : "bg-gradient-to-b from-violet-400 to-violet-600",
-                  ].join(" ")}
-                >
-                  {i + 1}
-                </span>
-                <div className="grid h-10 w-10 place-items-center rounded-xl bg-white shadow ring-1 ring-slate-200">
-                  {s.iconImg ? (
-                    <img
-                      src={s.iconImg}
-                      alt=""
-                      className="h-6 w-6 object-contain"
-                      draggable={false}
-                    />
-                  ) : (
-                    <div className="h-6 w-6 rounded bg-gradient-to-b from-violet-300 to-violet-500 opacity-70" />
-                  )}
-                </div>
-              </div>
-
-              {/* 文案 */}
-              <div className="min-w-0">
-                <h3 className="text-lg font-semibold text-slate-900">
-                  {s.title}
-                </h3>
-                <p className="mt-1 text-[15px] leading-relaxed text-slate-600">
-                  {s.desc}
-                </p>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ================= 右列：展示卡片（图片随 active 切换） ================= */
-function RightShowcase({ steps, active }: { steps: Step[]; active: number }) {
-  return (
-    <div className="relative">
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_18px_46px_rgba(17,24,39,.08)]">
-
-        {/* 右侧主图：跟随 active 切换（淡入淡出） */}
-        <div className="px-6 pt-6 md:px-8">
-          <div className="relative aspect-[16/10] overflow-hidden rounded-xl ring-1 ring-slate-200 bg-slate-100">
-            {steps.map((s, i) => (
-              <img
-                key={i}
-                src={s.image}
-                alt={s.imageAlt || s.title}
-                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
-                  i === active ? "opacity-100" : "opacity-0"
-                }`}
-                draggable={false}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* 右侧文字：跟随 active 显示对应标题与描述 */}
-        <div className="space-y-5 px-6 py-6 md:px-8">
-          <BlockTitle>HIGHLIGHTS</BlockTitle>
-
-          {/* 标题（作为一条高亮项） */}
-          <FeatureItem text={steps[active].title} />
-
-          {/* 具体描述（你的左侧那句描述） */}
-          <FeatureItem text={steps[active].desc} />
-
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <button className="inline-flex flex-1 items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50">
-              Sign up
-            </button>
-            <button className="inline-flex flex-1 items-center justify-center rounded-2xl bg-gradient-to-b from-violet-500 to-violet-600 px-4 py-3 text-sm font-semibold text-white shadow-[0_10px_22px_rgba(111,87,255,.35)] ring-1 ring-violet-500/30 hover:brightness-105">
-              Console
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ================= 小组件 ================= */
-function Chip({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div
-      className={`inline-flex items-center rounded-2xl border border-slate-200 bg-white/95 px-3 py-2 text-[13px] font-semibold text-slate-800 shadow-sm backdrop-blur ${className}`}
-    >
-      {children}
-    </div>
-  );
-}
-
-function BlockTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-      {children}
-    </p>
-  );
-}
-
-function FeatureItem({
-  text,
-  iconSize = 20, // 统一图标尺寸（px）
-}: {
-  text: string;
-  iconSize?: number;
-}) {
-  return (
-    <div className="flex items-start gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-slate-800 shadow-sm">
-      {/* 固定尺寸 + 不允许收缩，避免被压缩变小 */}
-      <CheckCircle2
-        className="mt-0.5 text-violet-600 shrink-0"
-        style={{ width: iconSize, height: iconSize }}
-      />
-      <p className="text-[15px] leading-relaxed">{text}</p>
-    </div>
-  );
-}
-
