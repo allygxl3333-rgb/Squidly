@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import heroImg from "../Photo/hero-image.png";
 import overlayImg from "../Photo/hero-card-2-with-cursor.png";
 
@@ -24,7 +25,7 @@ function CircleToggle({
   );
 }
 
-/* ─ Compare Slider (keeps your behavior) ─ */
+/* ─ Compare Slider（与你之前一致，无需修改 zoom） ─ */
 function CompareSlider({
   leftSrc,
   rightSrc,
@@ -78,7 +79,9 @@ function CompareSlider({
       onPointerUp={endDrag}
       onPointerLeave={endDrag}
     >
+      {/* 右图（全幅） */}
       <img src={rightSrc} alt="right" className="absolute inset-0 h-full w-full object-cover" />
+      {/* 左图（裁切） */}
       <img
         src={leftSrc}
         alt="left"
@@ -86,6 +89,7 @@ function CompareSlider({
         style={{ clipPath: `inset(0 ${rightClip}% 0 0)` }}
       />
 
+      {/* 标签 */}
       <div className="pointer-events-none absolute left-3 top-3 rounded-md bg-black/60 px-3 py-1 text-xs font-semibold text-white shadow">
         {leftLabel}
       </div>
@@ -93,6 +97,7 @@ function CompareSlider({
         {rightLabel}
       </div>
 
+      {/* 分割线 + 把手 */}
       <div className="absolute top-0" style={{ left: `calc(${pos}% - 1px)` }} aria-hidden>
         <div className="h-full w-[2px] bg-white/95 shadow-[0_0_0_1px_rgba(0,0,0,0.25)]" />
       </div>
@@ -179,30 +184,41 @@ function FeatureCard({
 /* ─ Section ─ */
 export default function ImageCompareSection() {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
+  const [expandCompare, setExpandCompare] = useState(false); // 中间卡片是否放大
+
+  // 展开时锁定滚动
+  useEffect(() => {
+    if (!expandCompare) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const prevent = (e: Event) => e.preventDefault();
+    window.addEventListener("wheel", prevent, { passive: false });
+    window.addEventListener("touchmove", prevent, { passive: false });
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("wheel", prevent);
+      window.removeEventListener("touchmove", prevent);
+    };
+  }, [expandCompare]);
 
   return (
     <section className="mx-auto w-full max-w-[1200px] px-6 py-16 md:py-20" aria-label="Undetectable by design">
+      {/* 标题区（保持你现在这版样式） */}
       <header className="mx-auto max-w-3xl text-center">
-        {/* 顶部胶囊标签 —— 与 PrivacySection 一致的风格 */}
         <span className="inline-block rounded-full bg-[#F1EDFF] px-3 py-1 text-xs font-semibold text-[#6F57FF] ring-1 ring-[#E3DDFF]">
           Features
         </span>
-
-        {/* 大标题 —— 字重/字号/行高与 PrivacySection 对齐 */}
         <h2 className="mt-4 text-4xl md:text-5xl font-extrabold leading-tight tracking-tight text-[#2A2F3A]">
           Eye Gaze Control
         </h2>
-
-        {/* 副标题 —— 与 PrivacySection 一致的字号/颜色 */}
         <p className="mt-3 text-[17px] leading-7 text-slate-600">
           Drag the split slider to compare two states. Sliding left reveals more of the right image.
         </p>
       </header>
 
-
-      {/* ✅ 改为 flex：每张卡独立决定高度；并在有卡展开时给其余卡加轻微模糊/降不透明 */}
+      {/* 三列卡片 */}
       <div className="mt-8 flex flex-col gap-6 md:mt-10 md:flex-row md:items-start">
-        {/* Card 1 wrapper：在非激活时添加淡淡的模糊与透明度 */}
+        {/* Card 1 */}
         <div
           className={`basis-full md:basis-1/3 transition-all duration-300 ${
             openIdx !== null && openIdx !== 0 ? "blur-[1px] opacity-80" : "blur-0 opacity-100"
@@ -230,7 +246,7 @@ export default function ImageCompareSection() {
           </FeatureCard>
         </div>
 
-        {/* Card 2 */}
+        {/* Card 2 —— 触发只放在媒体区域；标题/按钮不会触发 */}
         <div
           className={`basis-full md:basis-1/3 transition-all duration-300 ${
             openIdx !== null && openIdx !== 1 ? "blur-[1px] opacity-80" : "blur-0 opacity-100"
@@ -239,11 +255,16 @@ export default function ImageCompareSection() {
           <FeatureCard
             title={
               <>
-                AAC, Integrated and 
+                AAC, Integrated and
                 <br /> Ready-to-Go
               </>
             }
-            media={
+          media={
+            <motion.div
+              layoutId="compare-card"
+              className={`rounded-2xl overflow-hidden ${expandCompare ? "pointer-events-none" : ""}`}
+              onMouseEnter={() => setExpandCompare(true)}   // ✅ 只打开
+            >
               <CompareSlider
                 leftSrc="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1600&auto=format&fit=crop"
                 rightSrc="https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1600&auto=format&fit=crop"
@@ -252,7 +273,9 @@ export default function ImageCompareSection() {
                 initial={50}
                 ratio="4/3"
               />
-            }
+            </motion.div>
+          }
+
             open={openIdx === 1}
             onToggle={() => setOpenIdx(openIdx === 1 ? null : 1)}
           >
@@ -273,7 +296,7 @@ export default function ImageCompareSection() {
           <FeatureCard
             title={
               <>
-                Say Goodbye to Scheduling 
+                Say Goodbye to Scheduling
                 <br /> Headaches
               </>
             }
@@ -292,6 +315,44 @@ export default function ImageCompareSection() {
           </FeatureCard>
         </div>
       </div>
+
+      {/* 放大层（只在 expandCompare 为 true 时出现） */}
+      <AnimatePresence>
+        {expandCompare && (
+          <motion.div
+            key="compare-overlay"
+            className="fixed inset-0 z-[70]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {/* 背景：半透明 + 模糊；点击背景关闭 */}
+            <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setExpandCompare(false)} />
+
+            {/* 居中大卡片（固定定位，不随滚轮动） */}
+            <div className="relative z-[80] h-full flex justify-center items-start pt-[14vh] px-4">
+              <motion.div
+                layoutId="compare-card"                 // ★ 与小卡一致：从原位放大
+                className="w-[min(1200px,96vw)] rounded-3xl bg-white shadow-2xl ring-1 ring-black/10 p-4"
+                onMouseLeave={() => setExpandCompare(false)} // 鼠标离开大卡片即还原
+                initial={{ opacity: 0.98, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0.98, scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 260, damping: 26 }}
+              >
+                <CompareSlider
+                  leftSrc="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1600&auto=format&fit=crop"
+                  rightSrc="https://images.unsplash.com/photo-1542751110-97427bbecf20?q=80&w=1600&auto=format&fit=crop"
+                  leftLabel="Squidly"
+                  rightLabel="Common Webmeeting"
+                  initial={50}
+                  ratio="16/9" // 横向更适合对比
+                />
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

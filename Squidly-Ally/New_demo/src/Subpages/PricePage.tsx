@@ -309,78 +309,82 @@ function BillingToggle({
 }
 
 function PricingCards() {
-    const [period, setPeriod] = useState<'monthly' | 'yearly'>('monthly');
+  type Period = 'monthly' | 'yearly';
+  const [period, setPeriod] = useState<Period>('monthly');
 
-    const PRICING_PLANS = [
-        {
-            id: 'basic',
-            name: 'Basic',
-            priceLabel: (p: 'monthly' | 'yearly') => (p === 'monthly' ? 'Free' : 'Free'),
-            subtitle: '',
-            tone: 'glass' as const,
-            features: [
-                'Limited meetings minutes',
-                'Limited on quiz and grid editor requests',
-            ],
-            cta: 'Purchase Plan',
-        },
-        {
-            id: 'advanced',
-            name: 'Advanced',
-            priceLabel: (p: 'monthly' | 'yearly') => (p === 'monthly' ? '$20' : '$16'),
-            subtitle: '/month pp',
-            tone: 'glass-strong' as const,
-            features: [
-                'Meetings up to 480 minutes per month',
-                'Extended limits on quiz and grid editor requests',
-                'Session scheduling',
-                'Customer support',
-                'SCIM user management',
-            ],
-            cta: 'Purchase Plan',
-        },
-        {
-            id: 'pro',
-            name: 'Pro',
-            priceLabel: (p: 'monthly' | 'yearly') => (p === 'monthly' ? '$35' : '$28'),
-            subtitle: '/month pp',
-            tone: 'solid' as const,
-            features: [
-                'Unlimited meeting minutes',
-                'Unlimited quiz and grid editor requests',
-                'Priority support and account management',
-                'Admin dashboard',
-                'Early feature access',
-            ],
-            cta: 'Purchase Plan',
-        },
-    ] as const;
+  const PRICING_PLANS = [
+    {
+      id: 'basic',
+      name: 'Basic',
+      priceLabel: (p: Period) => (p === 'monthly' ? 'Free' : 'Free'),
+      subtitle: '',
+      tone: 'glass' as const,
+      features: [
+        'Limited meetings minutes',
+        'Limited on quiz and grid editor requests',
+      ],
+      cta: 'Sign in ',
+    },
+    {
+      id: 'advanced',
+      name: 'Advanced',
+      priceLabel: (p: Period) => (p === 'monthly' ? '$20' : '$16'),
+      subtitle: '/ month pp',
+      tone: 'glass-strong' as const,
+      features: [
+        'Meetings up to 480 minutes per month',
+        'Extended limits on quiz and grid editor requests',
+        'Session scheduling',
+        'Customer support',
+        'SCIM user management',
+      ],
+      cta: 'Sign in',
+    },
+    {
+      id: 'pro',
+      name: 'Pro',
+      priceLabel: (p: Period) => (p === 'monthly' ? '$35' : '$28'),
+      subtitle: '/ month pp',
+      tone: 'solid' as const,
+      features: [
+        'Unlimited meeting minutes',
+        'Unlimited quiz and grid editor requests',
+        'Priority support and account management',
+        'Admin dashboard',
+        'Early feature access',
+      ],
+      cta: 'Sign in ',
+    },
+  ] as const;
 
-    const yellowBlobs = `
-    radial-gradient(740px 340px at 18% 44%,
-      rgba(221,193,152,.58) 0,
-      rgba(221,193,152,.32) 28%,
-      transparent 62%),
-    radial-gradient(740px 340px at 82% 44%,
-      rgba(221,193,152,.58) 0,
-      rgba(221,193,152,.32) 28%,
-      transparent 62%)
+  // 只画左右两块黄色 —— 稍微放大一点
+  const yellowBlobs = `
+    radial-gradient(800px 800px at 16% 70%,
+      rgba(221,193,152,.8) 0,
+      rgba(221,193,152,.6) 28%,
+      transparent 64%),
+    radial-gradient(800px 800px at 84% 30%,
+      rgba(221, 193, 152, .8) 0,
+      rgba(221,193,152,.5) 28%,
+      transparent 64%)
   `;
 
-    const purpleBlob = `
-    radial-gradient(540px 260px at 50% 34%,
-      rgba(135,92,255,.44) 0,
-      rgba(135,92,255,.28) 24%,
-      rgba(135,92,255,.14) 34%,
-      rgba(135,92,255,.06) 40%,
-      transparent 48%)
+  // 中间紫色 —— 纵向拉长、范围加大，但边缘迅速衰减为透明
+  const purpleBlob = `
+    radial-gradient(720px 2500px at 50% 45%,
+      rgba(135,92,255,.42) 0,
+      rgba(135,92,255,.30) 24%,
+      rgba(135,92,255,.14) 40%,
+      rgba(135,92,255,.06) 55%,
+      transparent 65%)
   `;
 
-    return (
-        <section
-            className="relative full-bleed isolate overflow-hidden bg-white -mt-36 md:-mt-48 pt-36 md:pt-48 pb-14 md:pb-16"
-        >
-            <style>{`
+  return (
+    <section 
+      className="relative full-bleed isolate overflow-hidden bg-white -mt-36 md:-mt-48 pt-36 md:pt-48 pb-14 md:pb-16"
+    >
+      {/* full-bleed helper 保持不变 */}
+      <style>{`
         .full-bleed{position:relative;width:100dvw;margin-left:calc(50% - 50dvw);margin-right:calc(50% - 50dvw)}
         @supports not (width:100dvw){
           .full-bleed{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
@@ -400,12 +404,34 @@ function PricingCards() {
             <div
                 className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-80
                   bg-gradient-to-b from-white via-white to-transparent"
-                aria-hidden
-            />
-            <div
-                className="absolute inset-x-0 bottom-0 -z-10 h-56 bg-gradient-to-b from-transparent to-white"
-                aria-hidden
-            />
+        aria-hidden
+      />
+
+      {/* 底部淡出为白色，衔接下个 section */}
+      <div
+        className="absolute inset-x-0 bottom-0 -z-10 h-56 bg-gradient-to-b from-transparent to-white"
+        aria-hidden
+      />
+
+
+      <div className="mx-auto max-w-[1100px] px-6">
+        {/* Title + bullets */}
+        <div className="text-center">
+          <h2 className="text-[28px] md:text-[32px] font-extrabold tracking-tight text-[#1A1E27]">
+            Pricing made accessible for everyone
+          </h2>
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[15px] text-slate-700">
+            <span>✓ Easy access</span>
+            <span>✓ 7 day free trial</span>
+            <span>✓ Cancel anytime</span>
+          </div>
+
+          
+            {/* Billing toggle */}
+            <div className="mt-6">
+            <BillingToggle period={period} setPeriod={setPeriod} />
+            </div>
+        </div>
 
             <div className="mx-auto max-w-[1100px] px-6">
                 <div className="text-center">
