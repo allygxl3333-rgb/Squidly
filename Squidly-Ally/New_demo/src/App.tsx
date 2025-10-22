@@ -21,6 +21,7 @@ import TrySquidlySection from './components/TrySquidlySection';
 import NewsletterModal from "./components/NewsletterModal";
 // 新建的定价页组件（我已放在 Canvas）
 import PricingPage from './Subpages/PricePage';
+import ContactPage from './Subpages/ContactPage';
 import WhyChooseSquidlySection from './components/WhyChooseSquidlySection';
 
 function Home() {
@@ -66,6 +67,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/pricing" element={<PricingPage />} />
+                    <Route path="/contact" element={<ContactPage />} />
                 </Routes>
             </BrowserRouter>
             <TrySquidlySection />
