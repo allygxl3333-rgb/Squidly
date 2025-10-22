@@ -29,7 +29,14 @@ export default function NavBar() {
                             >
                                 Pricing
                             </NavLink>
-                            <a href="/#contact">Contact</a>
+                            <NavLink
+                                to="/contact"
+                                className={({ isActive }) =>
+                                    `transition-colors ${isActive ? 'text-[#6F57FF] font-semibold' : ''}`
+                                }
+                            >
+                                Contact
+                            </NavLink>
                         </nav>
 
                         {/* CTA */}

@@ -3,91 +3,72 @@ import { Linkedin } from "lucide-react";
 
 export default function FooterInfoSection() {
   const year = new Date().getFullYear();
+
   return (
-    <section aria-label="Footer links" className="py-14">
-      <div className="mx-auto w-full max-w-screen-3xl px-4 sm:px-6">
-        <div className="rounded-3xl bg-white/70 ring-1 ring-slate-900/10 shadow-[0_10px_30px_rgba(16,24,40,0.06)] backdrop-blur-sm">
-          <div className="grid grid-cols-12 gap-x-8 gap-y-12 p-10 md:p-12">
-            {/* Left */}
-            <div className="col-span-12 sm:col-span-6 lg:col-span-3">
+    <footer
+      aria-label="Site footer"
+      // 顶部从“白色”开始，向下渐变到米黄→浅紫
+      className="relative bg-gradient-to-b from-white via-amber-50/75 to-violet-100"
+    >
+      {/* 顶部羽化盖层：白 -> 透明，消除接缝（绝对安全） */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-0 right-0 top-0 h-10"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)",
+        }}
+      />
+
+      {/* 内容 */}
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          {/* 1) 品牌 + 邮箱 + 版权 */}
+          <div>
+            <div className="text-lg font-semibold">Squidly</div>
+            <a
+              href="mailto:contact@squidly.com.au"
+              className="mt-1 block text-sm text-slate-700 hover:underline"
+            >
+              contact@squidly.com.au
+            </a>
+            <p className="mt-8 text-xs text-slate-600">© {year} Made by Squidly</p>
+          </div>
+
+          {/* 2) Legal */}
+          <div>
+            <div className="font-semibold">Legal</div>
+            <ul className="mt-2 space-y-2 text-sm">
+              <li><a href="#privacy" className="hover:underline text-slate-700">Privacy</a></li>
+              <li><a href="#terms" className="hover:underline text-slate-700">Terms</a></li>
+            </ul>
+          </div>
+
+          {/* 3) Support */}
+          <div>
+            <div className="font-semibold">Support</div>
+            <ul className="mt-2 space-y-2 text-sm">
+              <li><a href="#contact" className="hover:underline text-slate-700">Contact us</a></li>
+              <li><a href="#schedule" className="hover:underline text-slate-700">Schedule a call</a></li>
+              <li className="text-slate-700">+61 406 741 714</li>
+            </ul>
+          </div>
+
+          {/* 4) 地址 + LinkedIn */}
+          <div className="lg:text-right">
+            <div className="font-semibold">Sydney, NSW 2076</div>
+            <div className="mt-2 inline-flex lg:justify-end">
               <a
-                href="mailto:contact@squidly.com.au"
-                className="text-xl md:text-2xl font-bold text-violet-800 hover:text-violet-900">
-                contact@squidly.com.au
+                href="https://www.linkedin.com"
+                aria-label="LinkedIn"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 text-slate-700 hover:bg-slate-50"
+              >
+                <Linkedin className="h-4 w-4" />
               </a>
-
-              <div className="mt-4 flex items-center gap-3">
-                <a
-                  href="https://www.linkedin.com"
-                  aria-label="LinkedIn"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-violet-50 text-violet-700 ring-1 ring-violet-200 hover:bg-violet-100 hover:text-violet-800"
-                >
-                  <Linkedin className="h-4 w-4" />
-                </a>
-              </div>
-
-              <p className="mt-6 text-sm text-violet-800/90">© {year} Made by Squidly</p>
-            </div>
-
-            {/* Product */}
-            <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-              <h4 className="mb-4 text-lg md:text-xl font-bold text-slate-900">Product</h4>
-              <ul className="space-y-2.5 md:space-y-3">
-                <li>
-                  <a href="#pricing" className="text-violet-800 hover:text-violet-900 text-lg md:text-xl font-semibold">
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a href="#features" className="text-violet-800 hover:text-violet-900 text-lg md:text-xl font-semibold">
-                    Features
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div className="col-span-6 sm:col-span-3 lg:col-span-2">
-              <h4 className="mb-4 text-lg md:text-xl font-bold text-slate-900">Legal</h4>
-              <ul className="space-y-2.5 md:space-y-3">
-                <li>
-                  <a href="#privacy" className="text-violet-800 hover:text-violet-900 text-lg md:text-xl font-semibold">
-                    Privacy
-                  </a>
-                </li>
-                <li>
-                  <a href="#terms" className="text-violet-800 hover:text-violet-900 text-lg md:text-xl font-semibold">
-                    Terms
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Contact */}
-            <div className="col-span-12 sm:col-span-6 lg:col-span-3">
-              <h4 className="mb-4 text-lg md:text-xl font-bold text-slate-900">Contact</h4>
-              <ul className="space-y-2.5 md:space-y-3">
-                <li>
-                  <a href="#contact" className="text-violet-800 hover:text-violet-900 text-lg md:text-xl font-semibold">
-                    Contact us
-                  </a>
-                </li>
-                <li>
-                  <a href="#schedule" className="text-violet-800 hover:text-violet-900 text-lg md:text-xl font-semibold">
-                    Schedule a call
-                  </a>
-                </li>
-                <li className="text-violet-800 text-lg md:text-xl font-semibold">+61 406 741 714</li>
-              </ul>
-            </div>
-
-            {/* Address */}
-            <div className="col-span-12 lg:col-span-2 lg:ml-auto lg:text-right">
-              <div className="text-lg md:text-xl font-bold text-slate-900">Sydney, NSW 2076</div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </footer>
   );
 }
