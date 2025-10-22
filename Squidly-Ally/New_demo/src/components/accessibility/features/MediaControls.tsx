@@ -13,7 +13,6 @@ export default function MediaControls() {
         Read aloud & audio description
       </div>
       <p className="text-[12.5px] text-slate-600 leading-5 mt-1">
-        朗读所选文本；若无选择则朗读页面标题/主标题（Alt+R）。
       </p>
       <div className="mt-2 flex items-center gap-2">
         <button
