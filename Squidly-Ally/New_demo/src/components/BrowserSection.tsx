@@ -1,299 +1,194 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import {
-    ChevronLeft,
-    ChevronRight,
-    RefreshCcw,
-    Star,
-    Globe,
-    Lock,
-    Eye,
-    Wrench,
-    Calendar,
-    LayoutGrid,
-    Share2,
-    Accessibility,
-    MessageSquare,
+    ChevronLeft, ChevronRight, RefreshCcw, Star, Globe, Lock,
+    Eye, Settings as SettingsIcon, HelpCircle
 } from "lucide-react";
 import { motion } from "framer-motion";
-import ScopedSplashCursor from "./ScopedSplashCursor";
-import GradientText from "./GradientText";
-const FEATURE_TOOLS = [
-    { key: "control", label: "Control", Icon: LayoutGrid },
-    { key: "share", label: "Share", Icon: Share2 },
-    { key: "access", label: "Access", Icon: Accessibility },
-    { key: "message", label: "Message", Icon: MessageSquare },
-] as const;
-export type Mode = 'Eye Gaze' | 'Tool Bar' | 'Schedule';
 
- function CluelyModeTabs({
-                                           value,
-                                           onChange,
-                                           className = '',
-                                       }: {
-    value: Mode;
-    onChange: (m: Mode) => void;
-    className?: string;
-}) {
-    const items: { key: Mode; label: string; Icon: any }[] = [
-        { key: 'Eye Gaze',  label: 'Eye Gaze',  Icon: Eye },
-        { key: 'Tool Bar',  label: 'Tool Bar',  Icon: Wrench },
-        { key: 'Schedule',  label: 'Schedule',  Icon: Calendar },
-    ];
+/* ===================== 颜色与常量 ===================== */
+const PURPLE = "#A087DD"; // 指定紫色
+type UIMode = "Eye Gaze" | "Settings" | "Quiz";
 
-    return (
-        <nav className={`flex flex-wrap items-center ${className}`}>
-            {items.map((it, i) => {
-                const active = value === it.key;
-                const Icon = it.Icon;
-                return (
-                    <div key={it.key} className="flex items-center">
-                        <button
-                            type="button"
-                            onClick={() => onChange(it.key)}
-                            className={[
-                                'inline-flex items-center gap-2 px-1.5 py-1 transition-colors rounded',
-                                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300/60',
-                                active ? 'text-indigo-600' : 'text-slate-500 hover:text-slate-700',
-                            ].join(' ')}
-                            aria-pressed={active}
-                            aria-current={active ? 'page' : undefined}
-                        >
-                            <Icon className="h-[18px] w-[18px]" strokeWidth={2} />
-                            <span className={active ? 'font-semibold' : ''}>{it.label}</span>
-                        </button>
-
-                        {/* 分隔线（仅在非最后一项 & 宽屏时显示，避免换行时尴尬） */}
-                        {i < items.length - 1 && (
-                            <span className="mx-5 hidden h-5 w-px bg-slate-200 sm:block" aria-hidden />
-                        )}
-                    </div>
-                );
-            })}
-        </nav>
-    );
-}
-/* ======================= 共享样式（保留你原来的） + 新增 ToolBar Showcase 样式 ======================= */
-function BrowserCSSWhite() {
+/* ===================== 样式 ===================== */
+function SectionStyles() {
     return (
         <style>{`
-/* ===== Section 外层 ===== */
-.wb-wrap{
+/* 整个 Section 背景：黑 → 紫 → 浅紫 → 浅橙 → 白；上下留白自适应 */
+.sq-sec {
   position: relative;
-  margin-top: 0;
-  padding: 3rem 0 4rem;
   isolation: isolate;
+  padding: clamp(84px, 12vw, 140px) 0 clamp(72px, 8vw, 112px);
+  background:
+    linear-gradient(
+      180deg,
+      #000000 0%,
+      #2B2348 15%,
+      #A995EE 38%,
+      #E9E3FB 64%,
+      #F7E9CC 88%,
+      #FFFFFF 100%
+    );
 }
 
-/* ===== “浏览器壳” ===== */
+/* 页面容器 */
+.sq-wrap { width: min(1000px, 92vw); margin: 0 auto; }
+
+/* 头部内容容器（标题+副标题+chips 同宽对齐） */
+.sq-head { max-width: 960px; }  /* <- 标题与 chips 左右边界一致 */
+
+/* 标题区 */
+.sq-title { color: #fff; }
+.sq-title h2 {
+  font-weight: 300;                 /* 合法的轻字重，保持你现在的纤细风格 */
+  letter-spacing: -0.03em;
+  line-height: 1.06;
+  font-size: clamp(40px, 7vw, 64px);
+}
+.sq-title p  {
+  margin-top: clamp(18px, 2.2vw, 28px);
+  color: rgba(255,255,255,.95);
+  font-weight: 400;
+  font-size: clamp(18px, 2.2vw, 28px);
+}
+
+/* 软胶囊 Chip 行 */
+.sq-chips {
+  display:flex; align-items:center;
+  gap: clamp(14px, 2vw, 20px);
+  margin-top: clamp(22px, 3vw, 32px);
+  flex-wrap: wrap;
+}
+.sq-chip {
+  --ring: rgba(160,135,221,.35);
+  display:inline-flex; align-items:center; gap:8px;
+  height: 40px; padding: 0 16px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.22);
+  background: transparent; color: rgba(255,255,255,.95);
+  font-weight: 600; transition: .18s ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+}
+.sq-chip:hover { background: rgba(255,255,255,.08); }
+.sq-chip svg { width:18px; height:18px; }
+.sq-chip.is-active {
+  background: #fff; color: ${PURPLE};
+  border-color: transparent;
+  box-shadow:
+    0 10px 26px rgba(0,0,0,.18),
+    0 0 0 1px rgba(255,255,255,.6) inset,
+    0 0 0 6px var(--ring);
+}
+
+/* 浏览器壳（与容器左缘对齐） */
 .wb-browser{
-  width: min(1020px, 90vw);
+  width: min(1020px, 92vw);
   height: clamp(400px, 56vw, 600px);
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 18px 46px rgba(17,24,39,.10), 0 2px 0 rgba(0,0,0,.03);
-  position: relative;
-  overflow: hidden;
-  margin: 0 auto;
+  position: relative; overflow: hidden;
+  margin: clamp(28px, 4vw, 44px) 0 0 0;
 }
 .wb-top{
-  height: 70px;
-  background: linear-gradient(#fff, #FAFBFF);
+  height: 70px; background: linear-gradient(#fff,#FAFBFF);
   border-bottom: 1px solid rgba(17,24,39,.06);
-  display: flex; align-items: center; gap: 10px; padding: 0 14px 0 18px;
+  display:flex; align-items:center; gap:10px; padding:0 14px 0 18px;
 }
 .wb-traffic{ display:flex; gap:8px; margin-right:8px; }
 .wb-dot{ width:12px; height:12px; border-radius:50%; }
-.wb-dot.red{ background:#ff5f57; }
-.wb-dot.yellow{ background:#ffbd2e; }
-.wb-dot.green{ background:#28c840; }
-
-.wb-btn{
-  width:30px; height:30px; border:none; background:transparent; border-radius:999px;
-  display:grid; place-items:center; color:#6b7280; transition:.15s ease;
-}
+.wb-dot.red{ background:#ff5f57; } .wb-dot.yellow{ background:#ffbd2e; } .wb-dot.green{ background:#28c840; }
+.wb-btn{ width:30px; height:30px; border:none; background:transparent; border-radius:999px; display:grid; place-items:center; color:#6b7280; transition:.15s; }
 .wb-btn:hover{ background:rgba(17,24,39,.06); }
 
-.wb-addr{
-  flex:1; height:38px; display:flex; align-items:center; gap:10px;
-  background:#fff; border:1px solid rgba(17,24,39,.12);
-  border-radius:999px; padding:0 12px; box-shadow: inset 0 -2px 0 rgba(17,24,39,.03);
-}
-.wb-addr input{
-  flex:1; border:none; outline:none; background:transparent;
-  color:#111827; font-weight:600; font-size:14px;
-}
+.wb-addr{ flex:1; height:38px; display:flex; align-items:center; gap:10px; background:#fff; border:1px solid rgba(17,24,39,.12);
+  border-radius:999px; padding:0 12px; box-shadow: inset 0 -2px 0 rgba(17,24,39,.03); }
+.wb-addr input{ flex:1; border:none; outline:none; background:transparent; color:#111827; font-weight:600; font-size:14px; }
 .wb-addr input::placeholder{ color:#9ca3af; }
-.wb-addr .icon{ color:#6b7280; }
-.wb-addr .lock{ color:#10b981; }
-.wb-addr .star{ color:#9ca3af; }
 
-/* 画布区域 */
-.wb-canvas{
-  position:absolute; inset:60px 0 0 0;
-  background: linear-gradient(180deg, #F6F0FF 0%, #F2EAFE 40%, #FFFFFF 100%);
-  display:flex; align-items:center; justify-content:center;
-}
+.wb-canvas{ position:absolute; inset:60px 0 0 0; background:#F4F2FE; display:flex; align-items:center; justify-content:center; }
 
-/* 卡片容器（Eye Gaze / ToolBar 均复用），默认是紫色虚线 */
-.wb-card{
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: transparent;   /* ← 去掉原来的渐变底 */
-  border: none;              /* ← 去掉虚线边框 */
-  border-radius: 0;          /* ← 不要内层圆角 */
-  isolation: isolate;        /* 保留角标/浮层叠加 */
-}
-/* Tool Bar 模式时，让容器变“透明”，把真实内容交给内部 .tb-window 来画 */
-.wb-card.is-toolbar{
-  background: transparent;
-  border: none;
-}
-
-/* 角标 */
+/* 画布内容卡 */
+.wb-card{ position:relative; width:100%; height:100%; background: transparent; border:none; isolation:isolate; }
 .wb-badge{
-  position:absolute; top:18px; left:18px;
-  display:inline-flex; align-items:center; gap:8px;
-  height:32px; padding:0 12px; border-radius:999px;
-  background:#ffffffcc; backdrop-filter:saturate(120%) blur(4px);
-  border:1px solid rgba(122,59,255,.18);
-  color:#6A4DFF; font-weight:700; font-size:12px;
-  box-shadow:0 6px 18px rgba(122,59,255,.18);
-  z-index:2;
+  position:absolute; top:18px; left:18px; display:inline-flex; align-items:center; gap:8px;
+  height:30px; padding:0 12px; border-radius:999px; background:#ffffffcc; backdrop-filter:saturate(120%) blur(4px);
+  border:1px solid rgba(122,59,255,.18); color:#6A4DFF; font-weight:700; font-size:12px; box-shadow:0 6px 18px rgba(122,59,255,.18); z-index:2;
 }
 
-/* 顶部模式按钮 */
-.neu-button{
-  border-radius:50px;
-  display:inline-flex; align-items:center; gap:1px; line-height:1;
-  cursor:pointer; transition:transform .12s, box-shadow .2s, background-color .2s, color .2s;
-  padding:12px 20px; font-size:16px; font-weight:600;
-
-  background-color:#fff;
-  color:#6F57FF;
-  border:1.5px solid #e6e6eb;
-  box-shadow:
-    inset 3px 3px 8px #e7e8ee,
-    inset -3px -3px 8px #ffffff,
-    2px 2px 8px #ececf3,
-    -2px -2px 8px #ffffff;
-}
-.neu-button:hover{
-  transform: translateY(-1px);
-  box-shadow:
-    inset 2px 2px 6px #e7e8ee,
-    inset -2px -2px 6px #ffffff,
-    4px 6px 14px #ececf3,
-    -2px -3px 12px #ffffff;
-}
-.neu-button:active{
-  background:#6F57FF; color:#fff; border-color:transparent;
-  box-shadow:
-    inset 2px 2px 6px rgba(255,255,255,.22),
-    inset -2px -2px 6px rgba(0,0,0,.14),
-    0 10px 22px rgba(111,87,255,.28);
-}
-.neu-button .icon{ width:18px; height:18px; line-height:0; display:inline-block; }
-.neu-button.is-active,
-.neu-button[aria-pressed="true"]{
-  background:#6F57FF; color:#fff; border-color:transparent;
-  box-shadow:
-    inset 2px 2px 6px rgba(255,255,255,.22),
-    inset -2px -2px 6px rgba(0,0,0,.14),
-    0 10px 22px rgba(111,87,255,.28);
-}
-
-/* =================== Tool Bar Showcase（视频 + 立体按钮） =================== */
-/* “窗口”外框（柔光边 + 圆角），置于 .wb-card 内部 */
-.tb-window{
-  position:absolute; inset:16px; border-radius:24px; padding:1px;
+/* 工具条模式窗口（视频 + 工具条） */
+.tb-window{ position:absolute; inset:16px; border-radius:24px; padding:1px;
   background: linear-gradient(120deg, rgba(122,59,255,.35), rgba(167,139,250,.25), rgba(122,59,255,.35));
-  box-shadow: 0 16px 44px rgba(122,59,255,.18);
-  display:flex;              
-}
-.tb-inner{
-  position:relative; border-radius:24px; background:#fff; overflow:hidden;
-  box-shadow: 0 10px 26px rgba(122,59,255,.12);
-  display:flex; flex-direction:column;  /* 关键：纵向排列：视频在上，工具条在下 */
-  width:100%; height:100%;
-}
-.tb-screen{
-  flex:1 1 auto; min-height:0; background:#EDEDF4;
-}
-.tb-screen img, .tb-screen video{
-  width:100%; height:100%; object-fit:cover; display:block;
-}
+  box-shadow: 0 16px 44px rgba(122,59,255,.18); display:flex; }
+.tb-inner{ position:relative; border-radius:24px; background:#fff; overflow:hidden; box-shadow: 0 10px 26px rgba(122,59,255,.12);
+  display:flex; flex-direction:column; width:100%; height:100%; }
+.tb-screen{ flex:1 1 auto; min-height:0; background:#EDEDF4; }
+.tb-screen img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-.tb-bar{
-  background:#2B2F36; color:#fff;
-  border-top:1px solid rgba(255,255,255,0.08);
-  padding:10px;
-}
-/* 每个 3D 按钮：一个“底座”+ 上面的“顶面” */
+.tb-bar{ background:#2B2F36; color:#fff; border-top:1px solid rgba(255,255,255,0.08); padding:10px; }
+.tb-grid{ display:grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 8px; }
 .tb-item{ position:relative; height:64px; }
-.tb-plate{
-  position:absolute; inset:0 0 4px 0; bottom:0;
-  height:10px; border-radius:12px; background:#1A1E24;
-  box-shadow: 0 16px 22px rgba(0,0,0,.35), 0 2px 0 rgba(255,255,255,.06) inset;
-}
-.tb-face{
-  position:relative; z-index:1; width:100%; height:100%;
-  border-radius:14px; border:1px solid rgba(255,255,255,.08);
+.tb-plate{ position:absolute; inset:0 0 4px 0; bottom:0; height:10px; border-radius:12px; background:#1A1E24; box-shadow: 0 16px 22px rgba(0,0,0,.35), 0 2px 0 rgba(255,255,255,.06) inset; }
+.tb-face{ position:relative; z-index:1; width:100%; height:100%; border-radius:14px; border:1px solid rgba(255,255,255,.08);
   box-shadow: 0 10px 16px rgba(0,0,0,.28), 0 0 0 1px rgba(255,255,255,.06) inset, 0 1px 0 rgba(255,255,255,.12) inset;
-  transition: transform .15s ease, box-shadow .15s ease;
-  background: linear-gradient(180deg, #4A4F58 0%, #2E333A 100%);
-}
-.tb-face:hover{ transform: translateY(-1px); }
-.tb-face:active{ transform: translateY(10px); box-shadow: 0 6px 10px rgba(0,0,0,.28); }
-/* 内容布局 */
+  background: linear-gradient(180deg, #4A4F58 0%, #2E333A 100%); transition: transform .15s ease, box-shadow .15s ease; }
+.tb-face:hover{ transform: translateY(-1px); } .tb-face:active{ transform: translateY(10px); box-shadow: 0 6px 10px rgba(0,0,0,.28); }
 .tb-content{ position:relative; z-index:2; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; }
-.tb-icon{ display:grid; place-items:center; width:28px; height:28px; border-radius:8px; background:rgba(0,0,0,.2); font-size:14px; line-height:0; }
+.tb-icon{ display:grid; place-items:center; width:28px; height:28px; border-radius:8px; background:rgba(0,0,0,.2); font-size:14px; }
 .tb-label{ font-size:11px; letter-spacing:.02em; opacity:.95; }
+.tb-face[data-active="true"]{ outline:2px solid rgba(27,201,142,.35); background: linear-gradient(180deg, #1BC98E 0%, #12A36B 100%); }
 
-.tb-face[data-variant="access"][data-active="true"]{
-  background: linear-gradient(180deg, #1BC98E 0%, #12A36B 100%);
-  box-shadow: 0 10px 16px rgba(0,0,0,.28), 0 0 0 2px rgba(27,201,142,.35);
-}
-.tb-face[data-variant="share"][data-active="true"]{
-  background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%);
-  box-shadow: 0 10px 16px rgba(0,0,0,.28), 0 0 0 2px rgba(245,158,11,.35);
-}
-.tb-face[data-variant="end"][data-active="true"]{
-  background: linear-gradient(180deg, #EF4444 0%, #B91C1C 100%);
-  box-shadow: 0 10px 16px rgba(0,0,0,.28), 0 0 0 2px rgba(239,68,68,.35);
-}
+@media (max-width: 560px){ .tb-item{ height:56px; } .tb-window{ inset:12px; border-radius:20px; } .tb-inner{ border-radius:20px; } }
 
-/* 响应式 */
-@media (max-width: 520px){
-  .tb-window{ inset:12px; border-radius:20px; }
-  .tb-inner{ border-radius:20px; }
-  .tb-item{ height:56px; }
+/* ===== 视频占位（Eye Gaze） ===== */
+.vid-ph{position:absolute;inset:0;display:grid;place-items:center;
+  background: linear-gradient(180deg,#0f1116 0%,#1a1f26 100%);
 }
+.vid-ph-inner{width:min(86%,980px);aspect-ratio:16/9;position:relative;overflow:hidden;
+  border-radius:18px;border:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(180deg,#0c0f13 0%,#0a0d11 100%);
+  box-shadow:0 22px 52px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08);
+}
+.vid-ph-play{position:absolute;inset:auto;left:50%;top:50%;
+  width:86px;height:86px;border-radius:999px;transform:translate(-50%,-50%);
+  background:rgba(255,255,255,.94);display:grid;place-items:center;
+  box-shadow:0 16px 36px rgba(0,0,0,.35);
+}
+.vid-ph-play::after{content:"";display:block;width:0;height:0;
+  border-left:26px solid ${PURPLE};border-top:16px solid transparent;border-bottom:16px solid transparent;
+  margin-left:6px;
+}
+.vid-ph-bar{position:absolute;left:0;right:0;bottom:0;height:58px;
+  display:flex;align-items:center;gap:12px;padding:0 16px;color:#fff;
+  background:linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.7));
+}
+.vid-ph-btn{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);}
+.vid-ph-progress{flex:1;height:6px;border-radius:999px;background:rgba(255,255,255,.25);overflow:hidden}
+.vid-ph-progress>span{display:block;width:32%;height:100%;background:${PURPLE};
+  box-shadow:0 0 12px rgba(160,135,221,.55);}
+.vid-ph-time{font-size:12px;opacity:.92}
 `}</style>
     );
 }
 
-/* ======================= 3D 工具条组件 ======================= */
-function ToolBar3D({ active = "access" as "control" | "access" | "share" | "settings" | "end" }) {
+/* ===================== 工具条（工具按钮演示） ===================== */
+function ToolBar() {
     const items = [
-        { key: "control", label: "control", icon: "🎛️", variant: "neutral" },
-        { key: "access", label: "access", icon: "🧑‍🦽", variant: "access" },
-        { key: "share", label: "share", icon: "📤", variant: "share" },
-        { key: "settings", label: "settings", icon: "⚙️", variant: "neutral" },
-        { key: "end", label: "end", icon: "⛔", variant: "end" },
+        { key: "control", label: "Control", icon: "🎛️" },
+        { key: "access",  label: "Access",  icon: "🧑‍🦽" },
+        { key: "share",   label: "Share",   icon: "📤" },
+        { key: "settings",label: "Settings",icon: "⚙️" },
+        { key: "end",     label: "End",     icon: "⛔" },
     ] as const;
-
     return (
         <div className="tb-bar">
-            <div className="grid grid-cols-5 gap-2">
-                {items.map(({ key, label, icon, variant }) => (
+            <div className="tb-grid">
+                {items.map(({ key, label, icon }) => (
                     <div key={key} className="tb-item">
                         <span aria-hidden className="tb-plate" />
                         <motion.button
                             type="button"
                             className="tb-face"
-                            data-variant={variant}
-                            data-active={active === key}
+                            data-active={key==="access"}
                             whileHover={{ y: -1 }}
                             whileTap={{ y: 10 }}
                             transition={{ type: "spring", stiffness: 420, damping: 32 }}
@@ -310,61 +205,60 @@ function ToolBar3D({ active = "access" as "control" | "access" | "share" | "sett
     );
 }
 
-/* ======================= Tool Bar Showcase（视频 + 3D 工具条） ======================= */
-function ToolBarShowcase() {
-    return (
-        <div className="tb-window">
-            <div className="tb-inner">
-                <div className="tb-screen">
-                    {/* 这里用一张示意图，你也可以换成 <video/> */}
-                    <img
-                        src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1600&auto=format&fit=crop"
-                        alt="demo"
-                    />
-                </div>
-                <ToolBar3D active="access" />
-            </div>
-        </div>
-    );
-}
-
-/* ======================= 卡片（Eye Gaze / Tool Bar / Schedule） ======================= */
-function BrowserCardWhite({ mode }: { mode: "Eye Gaze" | "Tool Bar" | "Schedule" }) {
-    const ModeIcon = mode === "Eye Gaze" ? Eye : mode === "Tool Bar" ? Wrench : Calendar;
-    const cardRef = useRef<HTMLDivElement>(null);
-
+/* ===================== 浏览器卡（根据模式切换画布内容） ===================== */
+function BrowserCard({ mode }: { mode: UIMode }) {
     return (
         <div className="wb-browser">
-            {/* 顶部地址栏（保留你原本写法） */}
             <div className="wb-top">
-                <div className="wb-traffic">
-                    <span className="wb-dot red" />
-                    <span className="wb-dot yellow" />
-                    <span className="wb-dot green" />
-                </div>
+                <div className="wb-traffic"><span className="wb-dot red" /><span className="wb-dot yellow" /><span className="wb-dot green" /></div>
                 <button className="wb-btn"><ChevronLeft size={16} /></button>
                 <button className="wb-btn"><ChevronRight size={16} /></button>
                 <button className="wb-btn"><RefreshCcw size={16} /></button>
                 <div className="wb-addr">
-                    <Globe size={16} className="icon" />
-                    <input defaultValue="squidly.com.au/#home-page" readOnly />
-                    <Lock size={16} className="lock" />
-                    <Star size={16} className="star" />
+                    <Globe size={16} /> <input defaultValue="squidly.com.au/#home-page" readOnly />
+                    <Lock size={16} /> <Star size={16} />
                 </div>
             </div>
 
-            {/* 画布区域 */}
             <div className="wb-canvas">
-                <div className={`wb-card ${mode === "Tool Bar" ? "is-toolbar" : ""}`} ref={cardRef}>
-                    {/* Eye Gaze：渲染流体光标 */}
-                    {mode === "Eye Gaze" && <ScopedSplashCursor containerRef={cardRef} />}
+                <div className="wb-card">
+                    {mode === "Eye Gaze" && (
+                        <div className="vid-ph" aria-hidden>
+                            <div className="vid-ph-inner" role="img" aria-label="Video placeholder">
+                                <div className="vid-ph-play" aria-hidden />
+                                <div className="vid-ph-bar">
+                                    <div className="vid-ph-btn" aria-hidden>▶</div>
+                                    <div className="vid-ph-progress"><span /></div>
+                                    <div className="vid-ph-time">00:24 / 03:12</div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
-                    {/* Tool Bar：切换为“视频 + 3D 工具条” */}
-                    {mode === "Tool Bar" && <ToolBarShowcase />}
+                    {mode === "Settings" && (
+                        <div className="tb-window">
+                            <div className="tb-inner">
+                                <div className="tb-screen">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1600&auto=format&fit=crop"
+                                        alt="demo"
+                                    />
+                                </div>
+                                <ToolBar />
+                            </div>
+                        </div>
+                    )}
 
-                    {/* Schedule：目前仅角标占位；需要也可扩展 */}
+                    {mode === "Quiz" && (
+                        <img
+                            alt="demo"
+                            src="https://images.unsplash.com/photo-1525182008055-f88b95ff7980?q=80&w=1600&auto=format&fit=crop"
+                            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        />
+                    )}
+
                     <span className="wb-badge">
-            <ModeIcon size={16} />
+            {mode === "Eye Gaze" ? <Eye size={16}/> : mode === "Settings" ? <SettingsIcon size={16}/> : <HelpCircle size={16}/>}
                         {mode}
           </span>
                 </div>
@@ -373,58 +267,62 @@ function BrowserCardWhite({ mode }: { mode: "Eye Gaze" | "Tool Bar" | "Schedule"
     );
 }
 
-/* ======================= 顶部模式 Chip ======================= */
-function ModeChip({
-                      active, onClick, icon, children,
-                  }: {
-    active: boolean;
-    onClick: () => void;
-    icon: React.ReactNode;
-    children: React.ReactNode;
-}) {
-    return (
-        <button onClick={onClick} className={`neu-button ${active ? "is-active" : ""}`}>
-            {icon}
-            <span>{children}</span>
-        </button>
-    );
-}
-
-/* ======================= 主导出 ======================= */
-export function BrowserSection() {
-    const [mode, setMode] = useState<Mode>('Tool Bar');
+/* ===================== 主 Section（名字保留为 BrowserSection） ===================== */
+function BrowserSection() {
+    const [mode, setMode] = useState<UIMode>("Settings");
 
     return (
-        <section className="wb-wrap">
-            <BrowserCSSWhite />
+        <section className="sq-sec">
+            <SectionStyles />
+
             <motion.div
-                initial={{ opacity: 0, y: 60, scale: .985 }}
+                initial={{ opacity: 0, y: 40, scale: .985 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, amount: 0.45 }}
-                transition={{ duration: 0.9, ease: "easeOut" }}
-                className="grid place-items-center"
+                viewport={{ once: true, amount: 0.35 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="sq-wrap"
             >
-                {/* Title + Modes */}
-                <div className="w-[min(1100px,92vw)] px-10 mb-5">
-                    {/*<GradientText*/}
-                    {/*    className="text-[80px] mb-10"*/}
-                    {/*    colors={["#CBC2FF", "#6F57FF", "#CBC2FF"]}*/}
-                    {/*    animationSpeed={5}*/}
-                    {/*    showBorder={false}*/}
-                    {/*>*/}
-                    {/*    Main Features*/}
-                    {/*</GradientText>*/}
-
-                    <CluelyModeTabs
-                        value={mode}
-                        onChange={setMode}
-                        className="text-[16px]" // 需要更大更紧凑可调 15/16/17
-                    />
+                {/* 头部内容（标题+副标题+chips 同宽对齐） */}
+                <div className="sq-head">
+                    <div className="sq-title">
+                        <h2>AAC, Integrated and Ready-to-Go</h2>
+                        <p>Access eye-gaze, switch controls, and more, no extra gear needed.</p>
                     </div>
 
-                {/* Browser */}
-                <BrowserCardWhite mode={mode} />
+                    <div className="sq-chips" role="tablist" aria-label="Feature modes">
+                        <button
+                            role="tab"
+                            aria-selected={mode === "Eye Gaze"}
+                            onClick={() => setMode("Eye Gaze")}
+                            className={`sq-chip ${mode === "Eye Gaze" ? "is-active" : ""}`}
+                        >
+                            <Eye /> Eye Gaze
+                        </button>
+                        <button
+                            role="tab"
+                            aria-selected={mode === "Settings"}
+                            onClick={() => setMode("Settings")}
+                            className={`sq-chip ${mode === "Settings" ? "is-active" : ""}`}
+                        >
+                            <SettingsIcon /> Settings
+                        </button>
+                        <button
+                            role="tab"
+                            aria-selected={mode === "Quiz"}
+                            onClick={() => setMode("Quiz")}
+                            className={`sq-chip ${mode === "Quiz" ? "is-active" : ""}`}
+                        >
+                            <HelpCircle /> Quiz
+                        </button>
+                    </div>
+                </div>
+
+                {/* 浏览器展示卡（与容器左缘对齐） */}
+                <BrowserCard mode={mode} />
             </motion.div>
         </section>
     );
 }
+
+export default BrowserSection;
+export { BrowserSection };

@@ -19,7 +19,7 @@ export default function KeyboardControls() {
           <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${state.keyboardAssist ? "translate-x-5" : "translate-x-0"}`} />
         </button>
       </div>
-      <p className="text-[12.5px] text-slate-600 leading-5 mt-1">注入 Skip link 并强化焦点环。快捷键：Alt + +/−、Alt+M、Alt+R。</p>
+      <p className="text-[12.5px] text-slate-600 leading-5 mt-1"></p>
     </section>
   );
 }

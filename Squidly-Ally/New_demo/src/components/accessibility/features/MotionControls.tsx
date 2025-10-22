@@ -19,7 +19,7 @@ export default function MotionControls() {
           <span className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${state.pauseMotion ? "translate-x-5" : "translate-x-0"}`} />
         </button>
       </div>
-      <p className="text-[12.5px] text-slate-600 leading-5 mt-1">暂停 CSS 动画/过渡，并暂停页面中的视频。</p>
+      <p className="text-[12.5px] text-slate-600 leading-5 mt-1"></p>
     </section>
   );
 }

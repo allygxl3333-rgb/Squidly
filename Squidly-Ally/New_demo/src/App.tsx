@@ -10,7 +10,7 @@ import AccInlineMagnifier from "./components/accessibility/features/AccMagnifier
 import AccMagnifierLite from "./components/AccMagnifierUltra";
 
 import SquidlyHero from './components/SquidlyHero';
-import { BrowserSection } from './components/BrowserSection';
+import  BrowserSection  from './components/BrowserSection';
 import StepsSection from './components/StepsSection';
 import VideoTextSection from './components/VideoTextSection';
 import TestimonialsSection from './components/TestimonialsSection';
