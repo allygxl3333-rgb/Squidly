@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 
-// ====== 沿用你 Why-Choose 的图片与文案（保持不变） ======
+// ===== 你的图片资源（保持不变） =====
 import imgVoice from "../Photo/why-voice.jpg";
 import imgCare from "../Photo/why-care.png";
 import imgAI from "../Photo/why-ai.png";
@@ -35,6 +36,51 @@ const MEDIA: React.ReactNode[] = [
 // 渐变色仅用于序号/装饰
 const ACCENTS = ["from-violet-500 to-fuchsia-500", "from-indigo-500 to-violet-500", "from-emerald-500 to-teal-500"];
 
+/* ───────── 动画 variants（加大位移，改用 spring，保证结尾不“卡”） ───────── */
+const springIn = (delay = 0) => ({
+  type: "spring",
+  stiffness: 140,     // 刚度：越大越“利落”
+  damping: 18,        // 阻尼：越小越“弹”，18≈顺滑不抖
+  mass: 0.75,
+  delay,
+});
+
+const fadeDown = {
+  initial: { opacity: 0, y: -36 },
+  animate: { opacity: 1, y: 0, transition: springIn(0) },
+};
+
+const listContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.09, delayChildren: 0.12 } },
+};
+
+const bulletItem = {
+  initial: { opacity: 0, x: -16 },
+  animate: { opacity: 1, x: 0, transition: springIn(0) },
+};
+
+// 三张卡片：更大振幅（左上/下/右上），并配合轻微缩放
+const cardVariant = (i: number) => {
+  const base = { opacity: 0, scale: 0.94 };
+  if (i === 0) {
+    return {
+      initial: { ...base, x: -80, y: -48 },
+      animate: { opacity: 1, x: 0, y: 0, scale: 1, transition: springIn(0.0) },
+    };
+  }
+  if (i === 1) {
+    return {
+      initial: { ...base, y: 72 },
+      animate: { opacity: 1, x: 0, y: 0, scale: 1, transition: springIn(0.06) },
+    };
+  }
+  return {
+    initial: { ...base, x: 80, y: -48 },
+    animate: { opacity: 1, x: 0, y: 0, scale: 1, transition: springIn(0.12) },
+  };
+};
+
 /* ─ Circle Toggle Button ─ */
 function CircleToggle({
   open,
@@ -57,7 +103,7 @@ function CircleToggle({
   );
 }
 
-/* ─ Feature Card（去掉了悬停放大相关逻辑） ─ */
+/* ─ Feature Card（大幅度+流畅 spring；子项错峰） ─ */
 function FeatureCard({
   index,
   title,
@@ -75,18 +121,22 @@ function FeatureCard({
   onToggle: () => void;
   dimmed?: boolean;
 }) {
+  const variant = cardVariant(index);
+
   return (
-    <article
+    <motion.article
       aria-expanded={open}
+      variants={variant}
       className={[
-        "relative rounded-3xl bg-white shadow-[0_18px_46px_rgba(17,24,39,.10)] ring-1 ring-black/5",
-        "transition-all duration-300",
+        // GPU 加速 / 预渲染提示，避免微卡
+        "relative rounded-3xl bg-white shadow-[0_18px_46px_rgba(17,24,39,.10)] ring-1 ring-black/5 transform-gpu will-change-transform will-change-opacity",
+        "transition-[box-shadow,filter] duration-300",
         open ? "scale-[1.01]" : "scale-[1.0]",
         dimmed ? "opacity-80 blur-[1px]" : "opacity-100 blur-0",
       ].join(" ")}
     >
       <div className="p-5 md:p-6">
-        {/* 媒体（无 hover 放大） */}
+        {/* 媒体 */}
         <div className="overflow-hidden rounded-2xl ring-1 ring-black/10">
           <div className="relative" style={{ aspectRatio: "4/3" }}>
             <div className="absolute inset-0">{media}</div>
@@ -109,49 +159,56 @@ function FeatureCard({
         </div>
         <div className={`mt-2 h-[4px] w-24 rounded-full bg-gradient-to-r ${ACCENTS[index % ACCENTS.length]}`} />
 
-        {/* 可折叠内容 */}
-        <div
+        {/* 可折叠内容：子项错峰淡入 */}
+        <motion.div
+          variants={listContainer}
           className={`mt-3 grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
             open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
           }`}
         >
           <div className="overflow-hidden">
             <div className="rounded-2xl bg-slate-50/70 p-4 ring-1 ring-black/5">
-              <ul className="space-y-3 text-[15px] leading-7 text-slate-700">
+              <motion.ul className="space-y-3 text-[15px] leading-7 text-slate-700">
                 {bullets.map((b, i) => (
-                  <li key={i} className="flex items-start gap-2">
+                  <motion.li key={i} variants={bulletItem} className="flex items-start gap-2">
                     <span className="mt-[9px] inline-block h-[6px] w-[6px] rounded-full bg-slate-400/80" />
                     <span>{b}</span>
-                  </li>
+                  </motion.li>
                 ))}
-              </ul>
+              </motion.ul>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         <CircleToggle open={open} onClick={onToggle} className="absolute bottom-4 right-4" />
       </div>
-    </article>
+    </motion.article>
   );
 }
 
-/* ───────── WhyChoose：去掉悬停放大 Overlay ───────── */
+/* ───────── Section：更大幅度 + 顺滑入场 ───────── */
 export default function WhyChooseSquidlySection(): JSX.Element {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
 
   return (
-    <section className="mx-auto w-full max-w-[1200px] px-6 py-16 md:py-20" aria-label="Why choose Squidly (Steps layout)">
-      {/* 头部文案保持不变 */}
-      <header className="mx-auto max-w-3xl text-center">
+    <motion.section
+      className="mx-auto w-full max-w-[1200px] px-6 py-16 md:py-20"
+      aria-label="Why choose Squidly (Steps layout)"
+      initial="initial"
+      whileInView="animate"
+      viewport={{ once: true, amount: 0.35 }} // 到视口 35% 触发一次
+    >
+      {/* 头部文案：大幅度下移 + spring */}
+      <motion.header className="mx-auto max-w-3xl text-center" variants={fadeDown}>
         <h2 className="text-5xl md:text-6xl font-extrabold leading-tight tracking-tight">
           <span className="text-[#7A5CFF]">Why choose</span> <span className="text-slate-900">Squidly</span>
         </h2>
         <p className="mt-4 text-[16px] leading-7 text-slate-600">
           Designed alongside clinicians and users, Squidly makes remote sessions effective and accessible.
         </p>
-      </header>
+      </motion.header>
 
-      {/* 三卡片结构（Steps 布局） */}
+      {/* 三卡片：更大振幅，从四周“飞入”且全程流畅 */}
       <div className="mt-10 flex flex-col gap-6 md:flex-row md:items-start">
         {ITEMS.map((it, idx) => (
           <div key={idx} className="basis-full transition-all duration-300 md:basis-1/3">
@@ -167,6 +224,6 @@ export default function WhyChooseSquidlySection(): JSX.Element {
           </div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 }

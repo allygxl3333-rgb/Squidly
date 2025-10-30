@@ -23,6 +23,7 @@ import NewsletterModal from "./components/NewsletterModal";
 import PricingPage from './Subpages/PricePage';
 import ContactPage from './Subpages/ContactPage';
 import WhyChooseSquidlySection from './components/WhyChooseSquidlySection';
+import TrustedBySection from './components/TrustedBySection';
 
 function Home() {
     return (
@@ -35,17 +36,15 @@ function Home() {
                 <SquidlyHero />
                 <BrowserSection />
             </div>
-
+            <TrustedBySection />
             <div id="modes">
-                <VideoTextSection />
+                <ImageCompareSection />
             </div>
-
-            <StepsSection />
+            <VideoTextSection />
             <TestimonialsSection />
-            <ImageCompareSection />
-            <PrivacySection />
-
             <WhyChooseSquidlySection />
+            <StepsSection />
+            <PrivacySection />
             <div id="contact">{/* 你后面可以塞联系表单/页脚 */}</div>
 
 
