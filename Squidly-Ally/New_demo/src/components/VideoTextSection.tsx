@@ -89,9 +89,6 @@ export default function VideoTextSection() {
       
 
       <div className="mx-auto max-w-[1200px] px-6 py-20 sm:py-24 md:py-28">
-        <p className="mb-6 text-xl sm:text-2xl font-medium tracking-tight text-slate-800">
-          It’s time to cheat
-        </p>
 
         <h1 className="leading-[0.85] tracking-tight">
           {/* line 1 (muted) */}
