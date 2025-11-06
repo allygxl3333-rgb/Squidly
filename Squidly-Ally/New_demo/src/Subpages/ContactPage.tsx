@@ -37,15 +37,13 @@ export default function ContactPage() {
       <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-80 bg-gradient-to-b from-white via-white to-transparent" />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-56 bg-gradient-to-b from-transparent to-white" />
 
-      {/* 内容：更大、更居中 */}
+      {/* 内容 */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 md:px-8">
         <div className="min-h-[82vh] flex items-center py-10 md:py-16">
           <div className="grid w-full md:grid-cols-[minmax(0,520px)_minmax(0,1fr)] gap-12 md:gap-16 items-start">
             {/* 左侧介绍 */}
             <div className="space-y-6 pt-4">
-              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
-                Contact our team
-              </h1>
+              <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">Contact our team</h1>
               <p className="text-slate-600 leading-relaxed max-w-xl text-lg">
                 Together, we can create accessibility for all
               </p>
@@ -66,24 +64,41 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* 右侧表单卡片：纯白 + 层次感 + 超柔外晕 */}
+            {/* 右侧表单卡片 */}
             <div className="relative">
-              {/* 外圈柔光（halo） */}
+              {/* ① 贴边深阴影（边缘最深） */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute -inset-[22px] rounded-[30px]
-                           bg-[radial-gradient(closest-side,rgba(2,6,23,0.18),rgba(2,6,23,0.10),transparent_70%)]
-                           blur-[38px]"
+                className="pointer-events-none absolute -inset-1 rounded-[26px]
+                          shadow-[0_0_0_8px_rgba(17,24,39,.22)]
+                          blur-[8px] opacity-95"
+              />
+
+              {/* ② 外扩柔阴影（过渡到很淡） */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -inset-3 rounded-[28px]
+                          shadow-[0_0_0_22px_rgba(17,24,39,.06)]
+                          blur-[18px] opacity-95"
+              />
+
+              {/* ③ 底部地影（小、软，别喧宾夺主） */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute left-1/2 -translate-x-1/2 -bottom-6
+                          h-[84px] w-[86%] rounded-[999px]
+                          bg-[radial-gradient(closest-side,rgba(17,24,39,0.16),rgba(17,24,39,0.08),transparent_72%)]
+                          blur-[16px]"
               />
               {/* 渐变细边（1px） */}
               <div className="rounded-[28px] p-[1px] bg-gradient-to-b from-white/60 via-slate-200/60 to-white/20">
                 <form
                   onSubmit={onSubmit}
                   className="force-text-scale relative rounded-[26px] bg-white
-                             shadow-[0_22px_60px_-20px_rgba(2,6,23,0.18),0_10px_26px_-12px_rgba(2,6,23,0.10)]
+                             shadow-[0_30px_90px_-35px_rgba(2,6,23,.45),_0_18px_40px_-24px_rgba(2,6,23,.22)]
                              p-6 md:p-8"
                 >
-                  {/* 顶部内侧高光（不要包裹内容！只做装饰） */}
+                  {/* 内侧高光（细腻的立体感） */}
                   <div
                     aria-hidden
                     className="pointer-events-none absolute inset-0 rounded-[26px]
@@ -111,7 +126,7 @@ export default function ContactPage() {
                       />
                     </Field>
 
-                    <Field label="Email" hint="Text">
+                    <Field label="Email" hint="number">
                       <input
                         required
                         type="email"
@@ -205,7 +220,7 @@ function Field({
   );
 }
 
-/* 输入框：圆角 + 微灰底，聚焦变白并带紫色环 */
+/* 输入框样式 */
 const inputCls =
   "w-full h-12 rounded-xl border border-slate-200 bg-slate-50/90 text-base " +
   "placeholder:text-slate-400 px-3 outline-none " +

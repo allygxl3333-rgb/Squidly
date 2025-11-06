@@ -37,6 +37,14 @@ export default function NavBar() {
                             >
                                 Contact
                             </NavLink>
+                            <NavLink
+                                to="/about"
+                                className={({ isActive }) =>
+                                    `transition-colors ${isActive ? 'text-[#6F57FF] font-semibold' : ''}`
+                                }
+                            >
+                                About
+                            </NavLink>
                         </nav>
 
                         {/* CTA */}
