@@ -11,7 +11,8 @@ export default function ContactPage() {
   const [form, setForm] = useState<FormState>(INIT);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState<null | "ok" | "err">(null);
-
+  const [contactMode, setContactMode] = useState<"email" | "phone">("email");
+  
   const yellowBlobs = `
     radial-gradient(800px 800px at 16% 70%, rgba(221,193,152,.8) 0, rgba(221,193,152,.6) 28%, transparent 64%),
     radial-gradient(800px 800px at 84% 30%, rgba(221,193,152,.8) 0, rgba(221,193,152,.5) 28%, transparent 64%)
@@ -48,18 +49,38 @@ export default function ContactPage() {
                 Together, we can create accessibility for all
               </p>
 
-              <div className="mt-10 flex items-start gap-4">
-                <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-purple-100">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path d="M4 6h16v12H4z" stroke="#8b5cf6" strokeWidth="1.6" />
-                    <path d="m4 7 8 6 8-6" stroke="#8b5cf6" strokeWidth="1.6" />
-                  </svg>
-                </span>
-                <div>
-                  <div className="text-sm text-slate-500">Email</div>
-                  <a href="mailto:contact@squidly.com.au" className="font-medium hover:underline text-lg">
-                    contact@squidly.com.au
-                  </a>
+              {/* Email + Phone */}
+              <div className="mt-10 space-y-6">
+                {/* Email */}
+                <div className="flex items-start gap-4">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-purple-100">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M4 6h16v12H4z" stroke="#8b5cf6" strokeWidth="1.6" />
+                      <path d="m4 7 8 6 8-6" stroke="#8b5cf6" strokeWidth="1.6" />
+                    </svg>
+                  </span>
+                  <div>
+                    <div className="text-sm text-slate-500">Email</div>
+                    <a href="mailto:contact@squidly.com.au" className="font-medium hover:underline text-lg">
+                      contact@squidly.com.au
+                    </a>
+                  </div>
+                </div>
+
+                {/* Phone */}
+                <div className="flex items-start gap-4">
+                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-purple-100">
+                    {/* 单色电话图标 */}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                      <path d="M22 16.92v2a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 3.18 2 2 0 0 1 4.11 1h2a2 2 0 0 1 2 1.72c.14 1.05.39 2.07.74 3.06a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l2-1.31a2 2 0 0 1 2.11-.45c.99.35 2.01.6 3.06.74A2 2 0 0 1 22 16.92Z" stroke="#8b5cf6" strokeWidth="1.6" />
+                    </svg>
+                  </span>
+                  <div>
+                    <div className="text-sm text-slate-500">Phone</div>
+                    <a href="tel:+61406741714" className="font-medium hover:underline text-lg">
+                      +61 406 741 714
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
