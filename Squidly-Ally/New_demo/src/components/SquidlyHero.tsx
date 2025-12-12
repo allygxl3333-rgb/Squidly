@@ -1,12 +1,37 @@
 'use client';
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 
-type Props = { bgSrc?: string; onGetStarted?: () => void };
+/** 从 Drive 链接取出 fileId，并拼出 preview 地址（用于 iframe） */
+function getDriveFileId(input?: string | null): string | null {
+    if (!input) return null;
+    try {
+        const u = new URL(input);
+        const m = u.pathname.match(/\/file\/d\/([^/]+)/);
+        if (m?.[1]) return m[1];
+        const id = u.searchParams.get("id");
+        if (id) return id;
+        const m2 = u.search.match(/[?&]id=([^&]+)/);
+        if (m2?.[1]) return m2[1];
+    } catch {}
+    return null;
+}
+function buildDrivePreviewUrl(driveUrl: string) {
+    const id = getDriveFileId(driveUrl);
+    return id ? `https://drive.google.com/file/d/${id}/preview` : null;
+}
 
-const EXTRA = 12;       // 让背景顶到导航后面再上提 12px
-const SOFT_EDGE = 70;   // 渐变起点向上扩 40px，避免出现硬边
+type Props = {
+    /** 必填：Google Drive 分享链接（设为“拥有链接的任何人可查看”） */
+    driveUrl: string;
+    /** 可选：<video> 的海报（iframe 不使用，但保留 props 以不破坏调用方） */
+    posterUrl?: string;
+    onGetStarted?: () => void;
+};
+
+const EXTRA = 12;
+const SOFT_EDGE = 70;
 
 function CTA({
                  children, href = "#", onClick
@@ -27,7 +52,7 @@ function CTA({
     );
 }
 
-export default function SquidlyHero({ bgSrc, onGetStarted }: Props) {
+export default function SquidlyHero({ driveUrl, posterUrl, onGetStarted }: Props) {
     const [navH, setNavH] = useState(0);
     const [vhUnit, setVhUnit] = useState<'svh'|'dvh'|'vh'>('vh');
 
@@ -37,6 +62,8 @@ export default function SquidlyHero({ bgSrc, onGetStarted }: Props) {
 
     const [ctaBottom, setCtaBottom]   = useState<number | null>(null);
     const [overlayTop, setOverlayTop] = useState<number>(0);
+
+    const previewUrl = useMemo(() => buildDrivePreviewUrl(driveUrl), [driveUrl]);
 
     useEffect(() => {
         const el = document.querySelector("header") as HTMLElement | null;
@@ -56,7 +83,7 @@ export default function SquidlyHero({ bgSrc, onGetStarted }: Props) {
         if (sup('height: 100dvh')) setVhUnit('dvh'); else setVhUnit('vh');
     }, []);
 
-    // 计算 CTA 与标题基线对齐、以及渐变起点
+    // 计算 CTA 与标题基线对齐、以及渐变起点（保留原逻辑）
     useEffect(() => {
         const calc = () => {
             const sec = sectionRef.current;
@@ -66,11 +93,9 @@ export default function SquidlyHero({ bgSrc, onGetStarted }: Props) {
             const secRect = sec.getBoundingClientRect();
             const h1Rect  = h1.getBoundingClientRect();
 
-            // 渐变从标题顶部“往上再抬 40px”，避免硬边
             const startTop = Math.max(0, h1Rect.top - secRect.top - SOFT_EDGE);
             setOverlayTop(startTop);
 
-            // CTA 与 "for Every Voice" 基线持平（近似用 h1 的 bottom 作基线）
             const baselineY = h1Rect.bottom;
             const ctaH =  ctaWrapRef.current?.firstElementChild instanceof HTMLElement
                 ? ctaWrapRef.current.firstElementChild.offsetHeight : 56;
@@ -87,8 +112,6 @@ export default function SquidlyHero({ bgSrc, onGetStarted }: Props) {
         return () => { window.removeEventListener('resize', raf); ro.disconnect(); };
     }, []);
 
-    const BG = bgSrc ?? "src/Photo/Herobg.png";
-
     return (
         <section
             ref={sectionRef}
@@ -99,33 +122,37 @@ export default function SquidlyHero({ bgSrc, onGetStarted }: Props) {
                 minHeight: `calc(100${vhUnit} + ${navH + EXTRA}px)`,
             }}
         >
-            {/* 背景图 */}
-            <div className="absolute inset-0 -z-10">
-                <img
-                    src={BG}
-                    alt="Accessible video call running on a laptop"
-                    className="w-full h-full object-cover object-center"
-                    draggable={false}
-                />
+            {/* 背景层：Drive 预览 iframe（最稳） */}
+            <div className="absolute inset-0 -z-10 bg-black">
+                {previewUrl && (
+                    <iframe
+                        key="drive-iframe"
+                        src={`${previewUrl}?autoplay=1&mute=1&controls=0&loop=1`}
+                        title="Drive Video"
+                        allow="autoplay"
+                        className="absolute inset-0 w-full h-full"
+                        style={{ border: 0, pointerEvents: "none" }}
+                    />
+                )}
             </div>
 
-            {/* 全宽渐变遮罩：从透明→微白→更深黑，左下更黑；无“矩形边界” */}
+            {/* 全宽渐变遮罩（保留原效果） */}
             <div
                 className="pointer-events-none absolute inset-x-0 bottom-0 -z-[5]"
                 style={{
-                    top: overlayTop, // 保持从标题上方一点点开始
+                    top: overlayTop,
                     background: `linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.00)   0%,
-      rgba(0,0,0,0.15)   10%,
-      rgba(0,0,0,0.50)   28%,
-      rgba(0,0,0,0.88)   58%,
-      rgba(0,0,0,0.98)  100%
-    )`,
+            to bottom,
+            rgba(0,0,0,0.00)   0%,
+            rgba(0,0,0,0.15)   10%,
+            rgba(0,0,0,0.50)   28%,
+            rgba(0,0,0,0.88)   58%,
+            rgba(0,0,0,0.98)  100%
+          )`,
                 }}
             />
 
-            {/* 左下文案 */}
+            {/* 左下文案（原样保留） */}
             <div className="absolute left-6 md:left-12 bottom-28 md:bottom-32 max-w-[min(48rem,60vw)]">
                 <h1
                     ref={titleRef}
@@ -141,7 +168,7 @@ export default function SquidlyHero({ bgSrc, onGetStarted }: Props) {
                 </p>
             </div>
 
-            {/* 右下 CTA（与标题基线持平） */}
+            {/* 右下 CTA（原样保留） */}
             <div ref={ctaWrapRef} className="absolute right-6 md:right-16" style={{ bottom: ctaBottom ?? 16 }}>
                 <CTA href="#get-started" onClick={onGetStarted}>Get started for free</CTA>
             </div>
