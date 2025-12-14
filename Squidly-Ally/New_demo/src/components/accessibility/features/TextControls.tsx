@@ -1,92 +1,70 @@
-// src/.../features/TextControls.tsx
 "use client";
 import React, { useMemo } from "react";
 import { useAcc } from "../AccProvider";
 import { SCALE_STEPS, DEFAULT_STATE } from "../state";
 
 export default function TextControls() {
-  const { state, setState, setScaleRelative } = useAcc();
+  const { state, setState } = useAcc();
 
-  const idx = useMemo(
-    () => Math.max(0, SCALE_STEPS.indexOf(state.textScale)),
-    [state.textScale]
-  );
   const min = 0;
-  const max = SCALE_STEPS.length - 1;
+  const max = Math.max(0, SCALE_STEPS.length - 1);
+
+  const currentIdx = useMemo(() => {
+    const i = SCALE_STEPS.indexOf(state.textScale as any);
+    return i >= 0 ? i : Math.min(Math.max(min, Math.floor((min + max) / 2)), max);
+  }, [state.textScale, min, max]);
+
+  const defaultIdx = useMemo(() => {
+    const i = SCALE_STEPS.indexOf(DEFAULT_STATE.textScale as any);
+    return i >= 0 ? i : Math.min(Math.max(min, Math.floor((min + max) / 2)), max);
+  }, [min, max]);
+
+  const smallIdx = min;
+  const mediumIdx = defaultIdx;
+  const largeIdx = max;
 
   const setIndex = (i: number) =>
-    setState((s) => ({
-      ...s,
-      textScale: SCALE_STEPS[Math.max(min, Math.min(max, i))],
-    }));
+      setState((s) => ({
+        ...s,
+        textScale: SCALE_STEPS[Math.max(min, Math.min(max, i))],
+      }));
 
-  const reset = () =>
-    setState((s) => ({ ...s, textScale: DEFAULT_STATE.textScale }));
-
-  const pct =
-    typeof state.textScale === "number"
-      ? `${Math.round(state.textScale * 1)}%`
-      : String(state.textScale);
+  const Item = ({
+                  label,
+                  idx,
+                }: {
+    label: string;
+    idx: number;
+  }) => {
+    const active = currentIdx === idx;
+    return (
+        <button
+            type="button"
+            onClick={() => setIndex(idx)}
+            aria-pressed={active}
+            className={`h-11 rounded-2xl text-[12.5px] font-semibold border transition focus:outline-none focus:ring-4 focus:ring-violet-200
+          ${active
+                ? "bg-violet-500 text-white border-violet-500 shadow-[0_6px_14px_rgba(139,92,246,.25)]"
+                : "bg-white text-slate-800 border-slate-200 hover:bg-slate-50"
+            }`}
+            style={{ flex: 1 }}
+        >
+          {label}
+        </button>
+    );
+  };
 
   return (
-    <div
-      className="rounded-xl border border-slate-200 p-3 grid gap-3"
-      role="group"
-      aria-label="Text size controls"
-    >
-      {/* 顶部按钮 */}
-      <div className="flex items-center justify-between gap-2">
-        <button
-          type="button"
-          onClick={() => setScaleRelative(-1)}
-          className="h-9 px-3 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-800 font-medium"
-          aria-label="Decrease text size"
-          title="Decrease text size (A−)"
-        >
-          A-
-        </button>
-
-        <button
-          type="button"
-          onClick={reset}
-          className="h-9 px-3 rounded-full bg-violet-700 text-white font-semibold hover:bg-violet-800"
-          aria-label="Reset text size"
-          title="Reset to default"
-        >
-          {pct}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setScaleRelative(1)}
-          className="h-9 px-3 rounded-lg border border-slate-300 hover:bg-slate-50 text-slate-800 font-medium"
-          aria-label="Increase text size"
-          title="Increase text size (A+)"
-        >
-          A+
-        </button>
+      <div
+          className="w-full"
+          role="group"
+          aria-label="Text size adjuster"
+      >
+        <div className="flex items-center justify-between gap-2">
+          <Item label="Small" idx={smallIdx} />
+          <Item label="Medium" idx={mediumIdx} />
+          <Item label="Large" idx={largeIdx} />
+        </div>
       </div>
-
-      {/* 滑杆：精细调 */}
-      <label className="grid gap-1 text-[12px] text-slate-500">
-        <span>Adjust precisely</span>
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={1}
-          value={idx}
-          onChange={(e) => setIndex(Number(e.currentTarget.value))}
-          aria-valuemin={min}
-          aria-valuemax={max}
-          aria-valuenow={idx}
-          className="w-full accent-violet-700"
-        />
-      </label>
-
-      <p className="text-[12px] text-slate-500">
-        Applies to all site text (rem-based fonts).
-      </p>
-    </div>
   );
 }
