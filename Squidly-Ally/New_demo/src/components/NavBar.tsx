@@ -19,8 +19,6 @@ export default function NavBar() {
 
                         {/* Links */}
                         <nav className="hidden md:flex items-center gap-8 text-[15px] text-slate-700">
-                            <a href="/#product">Product</a>
-                            <a href="/#modes">Modes</a>
                             <NavLink
                                 to="/pricing"
                                 className={({ isActive }) =>

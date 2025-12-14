@@ -3,10 +3,19 @@ import React from "react";
 export const PrivacySection: React.FC = () => {
   return (
     <section className="relative w-full overflow-hidden bg-white py-24 md:py-28">
-      {/* 背景光晕 */}
-      <div className="pointer-events-none absolute inset-0 flex justify-center">
-        <div className="h-[520px] w-[900px] rounded-full bg-[radial-gradient(circle_at_center,_rgba(168,85,247,0.35),_rgba(251,191,36,0.18),_transparent_70%)] blur-3xl" />
-      </div>
+    {/* 背景光晕（上下都留白 + 光晕不会溢出到底部） */}
+    <div className="pointer-events-none absolute inset-x-0 top-32 bottom-32 flex items-center justify-center">
+      <div
+        className="
+          h-[min(520px,100%)]
+          w-[min(900px,100%)]
+          rounded-full
+          bg-[radial-gradient(circle_at_center,_rgba(168,85,247,0.35),_rgba(251,191,36,0.18),_transparent_70%)]
+          blur-3xl
+        "
+      />
+    </div>
+
 
       <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 text-center">
         {/* 标题 */}
