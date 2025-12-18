@@ -26,6 +26,7 @@ import WhyChooseSquidlySection from './components/WhyChooseSquidlySection';
 import TrustedBySection from './components/TrustedBySection';
 import AboutPage from './Subpages/AboutPage/AboutPage';
 import FeaturePage from './Subpages/FeaturePage/FeaturePage';
+import ProductPage from './Subpages/ProductPage/ProductPage';
 
 function Home() {
     return (
@@ -71,6 +72,7 @@ export default function App() {
                     <Route path="/contact" element={<ContactPage />} />
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/feature" element={<FeaturePage />} />
+                    <Route path="/product" element={<ProductPage />} />
                 </Routes>
             </BrowserRouter>
             <TrySquidlySection />

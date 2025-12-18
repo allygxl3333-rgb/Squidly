@@ -51,6 +51,14 @@ export default function NavBar() {
                             >
                                 Feature
                             </NavLink>
+                            <NavLink
+                                to="/product"
+                                className={({ isActive }) =>
+                                    `transition-colors ${isActive ? 'text-[#6F57FF] font-semibold' : ''}`
+                                }
+                            >
+                                Product
+                            </NavLink>
                         </nav>
 
                         {/* CTA */}
