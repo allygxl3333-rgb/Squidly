@@ -3,6 +3,32 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 
+function AnnouncementPill() {
+    return (
+        <a
+            href="/product"
+            className="
+              inline-flex items-center gap-3
+              rounded-full px-5 py-2
+              bg-white/90 backdrop-blur
+              text-slate-900
+              shadow-[0_8px_24px_rgba(0,0,0,.25)]
+              hover:bg-white transition
+            "
+        >
+            <span className="text-xs font-semibold bg-[#A087DD] text-white px-2 py-0.5 rounded-full">
+                New
+            </span>
+            <span className="text-sm font-medium">
+                We’ve launched the Product Page
+            </span>
+            <span className="text-sm font-semibold text-[#6B5BD2]">
+                Explore →
+            </span>
+        </a>
+    );
+}
+
 /** 从 Drive 链接取出 fileId，并拼出 preview 地址（用于 iframe） */
 function getDriveFileId(input?: string | null): string | null {
     if (!input) return null;
@@ -122,6 +148,18 @@ export default function SquidlyHero({ driveUrl, posterUrl, onGetStarted }: Props
                 minHeight: `calc(100${vhUnit} + ${navH + EXTRA}px)`,
             }}
         >
+
+            {/* 🔔 New Product Page announcement */}
+            <div
+            className="relative z-20 flex justify-center"
+            style={{
+                marginTop: navH ? navH : 64,
+                transform: "translateY(-48px)",
+            }}
+            >
+                <AnnouncementPill />
+            </div>
+
             {/* 背景层：Drive 预览 iframe（最稳） */}
             <div className="absolute inset-0 -z-10 bg-black">
                 {previewUrl && (
