@@ -64,7 +64,7 @@ function collectTextFromRoot(root: HTMLElement, excludeSelector: string) {
         safeRoot,
         NodeFilter.SHOW_TEXT,
         {
-            acceptNode(node) {
+            acceptNode(node: Node) {
                 const text = (node.textContent || "").replace(/\s+/g, " ").trim();
                 if (!text) return NodeFilter.FILTER_REJECT;
                 const parent = node.parentElement as HTMLElement | null;
