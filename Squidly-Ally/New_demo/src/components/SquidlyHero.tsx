@@ -43,18 +43,17 @@ function getDriveFileId(input?: string | null): string | null {
     } catch {}
     return null;
 }
-function buildDrivePreviewUrl(driveUrl: string) {
+function buildDrivePreviewUrl(driveUrl?: string) {
     const id = getDriveFileId(driveUrl);
     return id ? `https://drive.google.com/file/d/${id}/preview` : null;
 }
 
 type Props = {
-    /** 必填：Google Drive 分享链接（设为“拥有链接的任何人可查看”） */
-    driveUrl: string;
-    /** 可选：<video> 的海报（iframe 不使用，但保留 props 以不破坏调用方） */
+    /** 可选：Google Drive 分享链接 */
+    driveUrl?: string;
     posterUrl?: string;
     onGetStarted?: () => void;
-};
+  };
 
 const EXTRA = 12;
 const SOFT_EDGE = 70;
